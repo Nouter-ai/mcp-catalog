@@ -1,0 +1,11 @@
+{
+  "id": "twenty",
+  "url": "https://api.twenty.com/mcp",
+  "name": "Twenty",
+  "landing": { "es": "Twenty" },
+  "color": "#FFFFFF",
+  "tagline": "People, companies and opportunities",
+  "description": "Twenty's official MCP server, for Twenty Cloud workspaces. Writes wait for your approval. A self-hosted Twenty can be added as your company's own MCP server.",
+  "settings": [],
+  "trustedLogin": []
+}
