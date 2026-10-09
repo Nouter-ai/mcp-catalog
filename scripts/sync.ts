@@ -12,14 +12,14 @@ export type Finding = { id: string; kind: "url-distinta" | "retirado" | "no-exis
 
 const REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers";
 
-// El registro contesta en décimas de segundo, pero a veces una consulta se cuelga casi dos minutos (medido el
-// 2026-10-09): cada una tiene 15 s y hasta 3 intentos. Si los tres fallan, el job falla.
+// El registro contesta entre décimas de segundo y casi dos minutos (medido el 2026-10-09, también fuera de GitHub):
+// cada consulta tiene 60 s y hasta 3 intentos. Si los tres fallan, el job falla.
 async function pedir(url: string, fetchImpl: typeof fetch, esperaMs: number): Promise<Response> {
   let ultimo: unknown;
   for (let intento = 0; intento < 3; intento++) {
     if (intento) await new Promise((r) => setTimeout(r, esperaMs));
     try {
-      const res = await fetchImpl(url, { signal: AbortSignal.timeout(15_000) });
+      const res = await fetchImpl(url, { signal: AbortSignal.timeout(60_000) });
       if (res.status < 500) return res;
       ultimo = new Error(`el registro respondió ${res.status}`);
     } catch (e) {
