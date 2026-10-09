@@ -12,11 +12,28 @@ export type Finding = { id: string; kind: "url-distinta" | "retirado" | "no-exis
 
 const REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers";
 
-export async function checkEntries(entries: Entry[], fetchImpl: typeof fetch = fetch): Promise<Finding[]> {
+// El registro contesta en décimas de segundo, pero a veces una consulta se cuelga casi dos minutos (medido el
+// 2026-10-09): cada una tiene 15 s y hasta 3 intentos. Si los tres fallan, el job falla.
+async function pedir(url: string, fetchImpl: typeof fetch, esperaMs: number): Promise<Response> {
+  let ultimo: unknown;
+  for (let intento = 0; intento < 3; intento++) {
+    if (intento) await new Promise((r) => setTimeout(r, esperaMs));
+    try {
+      const res = await fetchImpl(url, { signal: AbortSignal.timeout(15_000) });
+      if (res.status < 500) return res;
+      ultimo = new Error(`el registro respondió ${res.status}`);
+    } catch (e) {
+      ultimo = e;
+    }
+  }
+  throw ultimo;
+}
+
+export async function checkEntries(entries: Entry[], fetchImpl: typeof fetch = fetch, esperaMs = 5000): Promise<Finding[]> {
   const out: Finding[] = [];
   for (const e of entries) {
     if (!e.registry) continue;
-    const res = await fetchImpl(`${REGISTRY}/${encodeURIComponent(e.registry)}/versions/latest`, { signal: AbortSignal.timeout(20_000) });
+    const res = await pedir(`${REGISTRY}/${encodeURIComponent(e.registry)}/versions/latest`, fetchImpl, esperaMs);
     if (res.status === 404) { out.push({ id: e.id, kind: "no-existe", detail: `${e.registry} no está en el registro` }); continue; }
     if (!res.ok) throw new Error(`el registro respondió ${res.status} para ${e.registry}`);
     const body = await res.json() as { server: { version?: string; remotes?: { url: string }[] };

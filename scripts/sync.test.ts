@@ -34,7 +34,7 @@ test("deprecated o deleted es retirado; un 404 es no-existe", async () => {
 
 test("un error del registro hace fallar todo: no se abre un PR que diga que no hay novedades", async () => {
   const f = (async () => new Response("", { status: 500 })) as unknown as typeof fetch;
-  await assert.rejects(checkEntries([entry({ registry: "com.a/mcp" })], f), /500/);
+  await assert.rejects(checkEntries([entry({ registry: "com.a/mcp" })], f, 0), /500/);
 });
 
 test("el informe avisa que cambiar la URL obliga a reconectar, y sin novedades es null", () => {
@@ -43,4 +43,15 @@ test("el informe avisa que cambiar la URL obliga a reconectar, y sin novedades e
   assert.match(md, /atlassian/);
   assert.match(md, /reconect/);
   assert.match(md, /2026-10-12/);
+});
+
+test("una consulta colgada o un 5xx se reintenta; si siguen fallando, falla", async () => {
+  let n = 0;
+  const flojo = (async () => { n++; if (n < 3) throw new DOMException("timeout", "TimeoutError"); return registro("active", ["https://a.example.com/mcp"]); }) as unknown as typeof fetch;
+  assert.deepEqual(await checkEntries([entry({ registry: "com.a/mcp" })], flojo, 0), []);
+  assert.equal(n, 3);
+  let m = 0;
+  const caido = (async () => { m++; return new Response("", { status: 503 }); }) as unknown as typeof fetch;
+  await assert.rejects(checkEntries([entry({ registry: "com.a/mcp" })], caido, 0), /503/);
+  assert.equal(m, 3);
 });
