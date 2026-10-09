@@ -1,0 +1,18 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - run: npm test
+      - run: node scripts/build.ts "${GITHUB_REF_NAME}"
+      - run: gh release create "${GITHUB_REF_NAME}" dist/catalog.json --title "${GITHUB_REF_NAME}" --notes "Catálogo ${GITHUB_REF_NAME}"
+        env:
+          GH_TOKEN: ${{ github.token }}

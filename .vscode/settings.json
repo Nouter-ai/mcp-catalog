@@ -1,0 +1,1 @@
+{ "json.schemas": [{ "fileMatch": ["servers/*.json", "!servers/order.json"], "url": "./schema/entry.schema.json" }] }
