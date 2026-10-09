@@ -1,0 +1,15 @@
+{
+  "id": "github",
+  "registry": "io.github.github/github-mcp-server",
+  "url": "https://api.githubcopilot.com/mcp/",
+  "name": "GitHub",
+  "landing": { "es": "GitHub" },
+  "color": "#FFFFFF",
+  "tagline": "Code, issues, pull requests and Actions",
+  "description": "GitHub's official MCP server, through your company's OAuth App. Search code, work with issues and pull requests, and follow Actions runs. Writes wait for your approval.",
+  "settings": [
+    { "field": "clientId", "variable": "MCP_FIXED_CLIENT_ID" },
+    { "field": "clientSecret", "variable": "MCP_FIXED_CLIENT_SECRET", "secret": true }
+  ],
+  "trustedLogin": ["https://github.com/login/oauth"]
+}

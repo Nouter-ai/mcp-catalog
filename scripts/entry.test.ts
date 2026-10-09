@@ -16,7 +16,7 @@ test("una entrada completa vale, y registry y landing son opcionales", () => {
 });
 
 test("el id: formato, reservados y el prefijo de los MCP propios", () => {
-  for (const id of ["Notion", "1abc", "a_b", "x".repeat(21), "context", "scheduler", "mcp", "google", "slack", "github", "mcp-full"]) {
+  for (const id of ["Notion", "1abc", "a_b", "x".repeat(21), "context", "scheduler", "mcp", "google", "slack", "mcp-full"]) {
     assert.notDeepEqual(checkEntry(con({ id })), [], id);
   }
   assert.deepEqual(checkEntry(con({ id: "a-1" })), []);
@@ -51,7 +51,7 @@ test("el color es #RRGGBB en mayúsculas", () => {
   assert.notDeepEqual(checkEntry(con({ color: "white" })), []);
 });
 
-test("settings: solo MCP_FIXED_CLIENT_ID, nunca un secret ni otra variable", () => {
+test("settings: el Client ID sin secret; ninguna otra variable", () => {
   assert.deepEqual(checkEntry(con({ settings: [{ field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }] })), []);
   for (const variable of ["BASE_URL", "CLIENT_SECRET", "MCP_FIXED_CLIENT_SECRET", "MCP_FIXED_URL"]) {
     assert.notDeepEqual(checkEntry(con({ settings: [{ field: "clientId", variable }] })), [], variable);
@@ -63,10 +63,31 @@ test("una clave desconocida se rechaza", () => {
   assert.notDeepEqual(checkEntry(con({ secrets: { A: "b" } })), []);
 });
 
-test("registry y trustedLogin con su formato", () => {
+test("registry con su formato", () => {
   assert.notDeepEqual(checkEntry(con({ registry: "notion" })), []);
-  assert.deepEqual(checkEntry(con({ trustedLogin: ["github.com"] })), []);
-  assert.notDeepEqual(checkEntry(con({ trustedLogin: ["https://github.com"] })), []);
+});
+
+const cliente = [{ field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }];
+
+test("trustedLogin son issuers https exactos, y piden un cliente", () => {
+  assert.deepEqual(checkEntry(con({ settings: cliente, trustedLogin: ["https://github.com/login/oauth"] })), []);
+  for (const t of ["github.com", "http://github.com/login/oauth", "https://u:p@github.com/x", "https://github.com/x#y",
+    "https://localhost/x"]) {
+    assert.notDeepEqual(checkEntry(con({ settings: cliente, trustedLogin: [t] })), [], t);
+  }
+  assert.notDeepEqual(checkEntry(con({ trustedLogin: ["https://github.com/login/oauth"] })), []);
+});
+
+test("settings acepta el Client secret, siempre como secret", () => {
+  const ok = [...cliente, { field: "clientSecret", variable: "MCP_FIXED_CLIENT_SECRET", secret: true }];
+  assert.deepEqual(checkEntry(con({ settings: ok })), []);
+  assert.notDeepEqual(checkEntry(con({ settings: [{ field: "clientSecret", variable: "MCP_FIXED_CLIENT_SECRET" }] })), []);
+  assert.notDeepEqual(checkEntry(con({ settings: [{ field: "x", variable: "MCP_FIXED_CLIENT_ID", secret: true }] })), []);
+  assert.notDeepEqual(checkEntry(con({ settings: [{ field: "x", variable: "MCP_FIXED_CLIENT_SECRET", secret: false }] })), []);
+});
+
+test("github ya no está reservado", () => {
+  assert.deepEqual(checkEntry(con({ id: "github", settings: cliente, trustedLogin: ["https://github.com/login/oauth"] })), []);
 });
 
 test("algo que no es un objeto", () => {

@@ -3,16 +3,18 @@
 
 export interface Entry {
   id: string; registry?: string; url: string; name: string; landing?: { es: string }; color: string;
-  tagline: string; description: string; settings: { field: string; variable: "MCP_FIXED_CLIENT_ID" }[]; trustedLogin: string[];
+  tagline: string; description: string; settings: Setting[]; trustedLogin: string[];
 }
 
+// Lo que carga el admin del tenant: el Client ID, y el Client secret siempre como secret (cifrado, nunca en este repo).
+export type Setting = { field: string; variable: "MCP_FIXED_CLIENT_ID" } | { field: string; variable: "MCP_FIXED_CLIENT_SECRET"; secret: true };
+
 // Los gatekeepers que siguen en el código de yunta-control. "mcp-" es el prefijo de los MCP propios de cada empresa.
-export const RESERVED = ["context", "scheduler", "mcp", "google", "slack", "github"] as const;
+export const RESERVED = ["context", "scheduler", "mcp", "google", "slack"] as const;
 
 const KEYS = new Set(["id", "registry", "url", "name", "landing", "color", "tagline", "description", "settings", "trustedLogin"]);
 const BLOCKED = [/^localhost$/i, /\.localhost$/i, /^127\./, /^0\./, /^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[01])\./,
   /^169\.254\./, /^\[?::1\]?$/, /^\[?f[cd][0-9a-f]{2}:/i, /^metadata\./i, /\.internal$/i];
-const HOST = /^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/;
 
 export function checkUrl(url: string): string | null {
   let u: URL;
@@ -22,6 +24,15 @@ export function checkUrl(url: string): string | null {
   if (u.hash) return "url: no puede llevar fragmento";
   if (BLOCKED.some((p) => p.test(u.hostname))) return "url: el host es privado";
   return null;
+}
+
+function isSetting(s: unknown): boolean {
+  if (typeof s !== "object" || s === null) return false;
+  const o = s as Record<string, unknown>;
+  if (typeof o.field !== "string" || !/^[a-zA-Z]{1,30}$/.test(o.field)) return false;
+  const keys = Object.keys(o).toSorted().join();
+  if (o.variable === "MCP_FIXED_CLIENT_ID") return keys === "field,variable";
+  return o.variable === "MCP_FIXED_CLIENT_SECRET" && o.secret === true && keys === "field,secret,variable";
 }
 
 const text = (v: unknown, max: number) => typeof v === "string" && v.trim() === v && v.length > 0 && v.length <= max;
@@ -48,14 +59,14 @@ export function checkEntry(raw: unknown): string[] {
     if (typeof l !== "object" || l === null || Object.keys(l).join() !== "es" || !text(l.es, 80)) errors.push("landing: { es } hasta 80");
   }
   if (!Array.isArray(e.settings)) errors.push("settings: tiene que ser una lista");
-  else for (const s of e.settings as Record<string, unknown>[]) {
-    if (typeof s !== "object" || s === null || Object.keys(s).toSorted().join() !== "field,variable"
-      || typeof s.field !== "string" || !/^[a-zA-Z]{1,30}$/.test(s.field) || s.variable !== "MCP_FIXED_CLIENT_ID") {
-      errors.push("settings: cada uno { field, variable: \"MCP_FIXED_CLIENT_ID\" }");
-    }
+  else for (const s of e.settings as Record<string, unknown>[]) if (!isSetting(s)) {
+    errors.push("settings: { field, variable: \"MCP_FIXED_CLIENT_ID\" } o { field, variable: \"MCP_FIXED_CLIENT_SECRET\", secret: true }");
   }
-  if (!Array.isArray(e.trustedLogin) || !e.trustedLogin.every((h) => typeof h === "string" && HOST.test(h))) {
-    errors.push("trustedLogin: una lista de dominios, como github.com");
+  if (!Array.isArray(e.trustedLogin) || !e.trustedLogin.every((t) => typeof t === "string" && checkUrl(t) === null)) {
+    errors.push("trustedLogin: issuers https exactos, como https://github.com/login/oauth");
+  } else if (e.trustedLogin.length && !(Array.isArray(e.settings)
+    && e.settings.some((s: Record<string, unknown>) => s?.variable === "MCP_FIXED_CLIENT_ID"))) {
+    errors.push("trustedLogin: pide un cliente (el Client ID en settings)");
   }
   return errors;
 }
