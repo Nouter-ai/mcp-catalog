@@ -1,0 +1,25 @@
+name: sync
+on:
+  schedule:
+    - cron: "0 12 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  registro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - id: sync
+        run: node scripts/sync.ts
+      - if: steps.sync.outputs.hay == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: sync/registro
+          title: "Novedades del registro oficial de MCP"
+          commit-message: "Novedades del registro oficial de MCP"
+          body-path: informes/registro.md
+          add-paths: informes/registro.md
