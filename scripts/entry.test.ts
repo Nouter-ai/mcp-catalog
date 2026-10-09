@@ -51,7 +51,7 @@ test("el color es #RRGGBB en mayúsculas", () => {
   assert.notDeepEqual(checkEntry(con({ color: "white" })), []);
 });
 
-test("settings: solo MCP_FIXED_CLIENT_ID, nunca un secret ni otra variable", () => {
+test("settings: el Client ID sin secret; ninguna otra variable", () => {
   assert.deepEqual(checkEntry(con({ settings: [{ field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }] })), []);
   for (const variable of ["BASE_URL", "CLIENT_SECRET", "MCP_FIXED_CLIENT_SECRET", "MCP_FIXED_URL"]) {
     assert.notDeepEqual(checkEntry(con({ settings: [{ field: "clientId", variable }] })), [], variable);
