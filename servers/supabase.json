@@ -1,0 +1,12 @@
+{
+  "id": "supabase",
+  "registry": "com.supabase/mcp",
+  "url": "https://mcp.supabase.com/mcp",
+  "name": "Supabase",
+  "landing": { "es": "Supabase" },
+  "color": "#FFFFFF",
+  "tagline": "Projects, databases and functions",
+  "description": "Supabase's official MCP server. Writes, including SQL, wait for your approval. Avoid connecting production projects.",
+  "settings": [],
+  "trustedLogin": []
+}

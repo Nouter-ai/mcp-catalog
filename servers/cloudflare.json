@@ -1,0 +1,11 @@
+{
+  "id": "cloudflare",
+  "url": "https://mcp.cloudflare.com/mcp",
+  "name": "Cloudflare",
+  "landing": { "es": "Cloudflare" },
+  "color": "#FFFFFF",
+  "tagline": "Your Cloudflare account",
+  "description": "Cloudflare's official MCP server. Its execute tool runs code against the API, so review each approval carefully.",
+  "settings": [],
+  "trustedLogin": []
+}

@@ -1,0 +1,11 @@
+{
+  "id": "salesforce",
+  "url": "https://api.salesforce.com/platform/mcp/v1/platform/sobject-all",
+  "name": "Salesforce",
+  "landing": { "es": "Salesforce, con la app de tu empresa" },
+  "color": "#FFFFFF",
+  "tagline": "Records, search and reports in your org",
+  "description": "Salesforce's hosted MCP server, through your company's app. You sign in with your own Salesforce user and its permissions; writes wait for your approval.",
+  "settings": [{ "field": "clientId", "variable": "MCP_FIXED_CLIENT_ID" }],
+  "trustedLogin": []
+}

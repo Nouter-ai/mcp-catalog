@@ -1,0 +1,12 @@
+{
+  "id": "stripe",
+  "registry": "com.stripe/mcp",
+  "url": "https://mcp.stripe.com",
+  "name": "Stripe",
+  "landing": { "es": "Stripe" },
+  "color": "#FFFFFF",
+  "tagline": "Customers, payments and invoices",
+  "description": "Stripe's official MCP server. Writes wait for your approval, and Stripe asks its own confirmation for refunds and payouts.",
+  "settings": [],
+  "trustedLogin": []
+}

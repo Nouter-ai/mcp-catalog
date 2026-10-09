@@ -1,0 +1,12 @@
+{
+  "id": "atlassian",
+  "registry": "com.atlassian/atlassian-mcp-server",
+  "url": "https://mcp.atlassian.com/v1/mcp",
+  "name": "Atlassian",
+  "landing": { "es": "Jira y Confluence" },
+  "color": "#FFFFFF",
+  "tagline": "Jira issues and Confluence pages",
+  "description": "Atlassian's official MCP server for Jira and Confluence. Your Atlassian admin has to allow this workspace's domain first, in Rovo > MCP server. Writes wait for your approval.",
+  "settings": [],
+  "trustedLogin": []
+}

@@ -1,0 +1,12 @@
+{
+  "id": "linear",
+  "registry": "app.linear/linear",
+  "url": "https://mcp.linear.app/mcp",
+  "name": "Linear",
+  "landing": { "es": "Linear" },
+  "color": "#FFFFFF",
+  "tagline": "Issues, projects and comments",
+  "description": "Linear's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
+  "settings": [],
+  "trustedLogin": []
+}

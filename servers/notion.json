@@ -1,0 +1,12 @@
+{
+  "id": "notion",
+  "registry": "com.notion/mcp",
+  "url": "https://mcp.notion.com/mcp",
+  "name": "Notion",
+  "landing": { "es": "Notion" },
+  "color": "#FFFFFF",
+  "tagline": "Pages, databases and comments",
+  "description": "Notion's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
+  "settings": [],
+  "trustedLogin": []
+}
