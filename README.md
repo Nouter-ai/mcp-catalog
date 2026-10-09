@@ -16,6 +16,10 @@ cualquier otro, nouter tiene "Any MCP server" y los servidores propios de cada e
 3. El id en `servers/order.json`, donde querés que aparezca.
 4. Un PR. El CI valida la entrada y prueba que la URL responda como servidor MCP.
 
+Para quien revisa: el CI de un PR corre el código del propio PR, así que un PR de afuera puede cambiar las
+pruebas. Antes de mergear, revisar que no toque `scripts/` ni `.github/`, o correr `node scripts/validate.ts
+--probe origin/main` en local.
+
 `registry` es el nombre del servidor en el [registro oficial de MCP](https://registry.modelcontextprotocol.io),
 si está. Con él, el job semanal avisa si el proveedor cambió la URL o lo retiró.
 
