@@ -11,10 +11,10 @@ test("logoUri codifica el SVG igual que logos.ts de yunta-control", () => {
   assert.equal(logoUri('<svg fill="#000"/>\n'), "data:image/svg+xml,%3Csvg%20fill%3D%22%23000%22%2F%3E");
 });
 
-test("el catálogo de hoy: siete servidores, en orden, válidos y con logo", async () => {
+test("el catálogo de hoy: ocho servidores, en orden, válidos y con logo", async () => {
   const c = await buildCatalog(root, "v1");
   assert.equal(c.version, "v1");
-  assert.deepEqual(c.servers.map((s) => s.id), ["notion", "linear", "atlassian", "cloudflare", "supabase", "stripe", "salesforce"]);
+  assert.deepEqual(c.servers.map((s) => s.id), ["notion", "linear", "atlassian", "cloudflare", "supabase", "stripe", "salesforce", "twenty"]);
   for (const s of c.servers) {
     assert.ok(s.logo.startsWith("data:image/svg+xml,"), s.id);
     assert.ok(s.logo.length < 5000, s.id);
@@ -23,7 +23,7 @@ test("el catálogo de hoy: siete servidores, en orden, válidos y con logo", asy
 });
 
 test("readEntries no lee order.json", async () => {
-  assert.equal((await readEntries(root)).length, 7);
+  assert.equal((await readEntries(root)).length, 8);
 });
 
 test("el build falla si una entrada no vale, si falta un logo o si el orden no nombra a todas", async () => {

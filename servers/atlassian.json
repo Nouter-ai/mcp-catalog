@@ -1,7 +1,7 @@
 {
   "id": "atlassian",
   "registry": "com.atlassian/atlassian-mcp-server",
-  "url": "https://mcp.atlassian.com/v1/mcp",
+  "url": "https://mcp.atlassian.com/v2/mcp",
   "name": "Atlassian",
   "landing": { "es": "Jira y Confluence" },
   "color": "#FFFFFF",
