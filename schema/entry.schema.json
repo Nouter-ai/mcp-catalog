@@ -25,7 +25,8 @@
           "scheduler",
           "mcp",
           "google",
-          "slack"
+          "slack",
+          "github"
         ]
       }
     },

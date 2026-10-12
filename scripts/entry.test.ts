@@ -16,7 +16,7 @@ test("una entrada completa vale, y registry y landing son opcionales", () => {
 });
 
 test("el id: formato, reservados y el prefijo de los MCP propios", () => {
-  for (const id of ["Notion", "1abc", "a_b", "x".repeat(21), "context", "scheduler", "mcp", "google", "slack", "mcp-full"]) {
+  for (const id of ["Notion", "1abc", "a_b", "x".repeat(21), "context", "scheduler", "mcp", "google", "slack", "github", "mcp-full"]) {
     assert.notDeepEqual(checkEntry(con({ id })), [], id);
   }
   assert.deepEqual(checkEntry(con({ id: "a-1" })), []);
@@ -86,8 +86,8 @@ test("settings acepta el Client secret, siempre como secret", () => {
   assert.notDeepEqual(checkEntry(con({ settings: [{ field: "x", variable: "MCP_FIXED_CLIENT_SECRET", secret: false }] })), []);
 });
 
-test("github ya no está reservado", () => {
-  assert.deepEqual(checkEntry(con({ id: "github", settings: cliente, trustedLogin: ["https://github.com/login/oauth"] })), []);
+test("github vuelve a estar reservado: es el gatekeeper nativo de nouter (v4)", () => {
+  assert.notDeepEqual(checkEntry(con({ id: "github", settings: cliente, trustedLogin: ["https://github.com/login/oauth"] })), []);
 });
 
 test("algo que no es un objeto", () => {
