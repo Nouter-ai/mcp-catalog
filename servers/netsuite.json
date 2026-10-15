@@ -10,5 +10,5 @@
     { "field": "accountId", "fills": "url" },
     { "field": "clientId", "variable": "MCP_FIXED_CLIENT_ID" }
   ],
-  "trustedLogin": []
+  "trustedLogin": ["https://system.netsuite.com"]
 }
