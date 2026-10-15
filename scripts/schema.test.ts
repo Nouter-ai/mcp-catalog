@@ -9,7 +9,7 @@ test("el esquema del editor nombra las mismas claves, reservados y variable que 
     ["color", "description", "id", "landing", "name", "registry", "settings", "tagline", "trustedLogin", "url"]);
   assert.equal(schema.additionalProperties, false);
   assert.deepEqual(schema.properties.id.not.enum.toSorted(), [...RESERVED].toSorted());
-  assert.deepEqual(schema.properties.settings.items.oneOf.map((f: any) => f.properties.variable.const).toSorted(),
-    ["MCP_FIXED_CLIENT_ID", "MCP_FIXED_CLIENT_SECRET"]);
+  assert.deepEqual(schema.properties.settings.items.oneOf.map((f: any) => f.properties.variable?.const ?? `fills:${f.properties.fills.const}`)
+    .toSorted(), ["MCP_FIXED_CLIENT_ID", "MCP_FIXED_CLIENT_SECRET", "fills:url"]);
   assert.equal(schema.properties.trustedLogin.items.pattern, "^https://");
 });

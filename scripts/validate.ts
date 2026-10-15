@@ -5,7 +5,11 @@ import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildCatalog } from "./build.ts";
+import { urlHoles, type Entry } from "./entry.ts";
 import { probe } from "./probe.ts";
+
+// Una url con hueco no tiene un host de ejemplo que resuelva: se prueba en un tenant (docs/yunta/netsuite.md).
+export const probeable = (e: Pick<Entry, "url">): boolean => urlHoles(e.url).length === 0;
 
 export function changedIds(files: string[]): string[] {
   return files.flatMap((f) => { const m = /^servers\/([a-z0-9-]+)\.json$/.exec(f); return m && m[1] !== "order" ? [m[1]] : []; });
@@ -23,6 +27,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     for (const id of changedIds(files)) {
       const s = catalog.servers.find((x) => x.id === id);
       if (!s) continue; // la entrada se borró
+      if (!probeable(s)) { console.log(`--  ${id} ${s.url}: con hueco, no se prueba`); continue; }
       const r = await probe(s.url);
       console.log(`${r.ok ? "ok " : "MAL"} ${id} ${s.url}: ${r.detail}`);
       failed ||= !r.ok;
