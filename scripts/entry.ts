@@ -6,8 +6,10 @@ export interface Entry {
   tagline: string; description: string; settings: Setting[]; trustedLogin: string[];
 }
 
-// Lo que carga el admin del tenant: el Client ID, y el Client secret siempre como secret (cifrado, nunca en este repo).
-export type Setting = { field: string; variable: "MCP_FIXED_CLIENT_ID" } | { field: string; variable: "MCP_FIXED_CLIENT_SECRET"; secret: true };
+// Lo que carga el admin del tenant: el Client ID, el Client secret siempre como secret (cifrado, nunca en este repo), o
+// un valor que llena el hueco de la url (el Account ID de NetSuite, docs/yunta/netsuite.md).
+export type Setting = { field: string; variable: "MCP_FIXED_CLIENT_ID" }
+  | { field: string; variable: "MCP_FIXED_CLIENT_SECRET"; secret: true } | { field: string; fills: "url" };
 
 // Los gatekeepers que siguen en el código de yunta-control. "mcp-" es el prefijo de los MCP propios de cada empresa.
 export const RESERVED = ["context", "scheduler", "mcp", "google", "slack", "github"] as const;
@@ -26,11 +28,30 @@ export function checkUrl(url: string): string | null {
   return null;
 }
 
+const HOLE = /\{([^}]*)\}/g;
+// Los huecos de una url, en orden: {campo} como primera etiqueta del host. checkEntry exige que haya uno como mucho.
+export const urlHoles = (url: string): string[] => [...url.matchAll(HOLE)].map((m) => m[1]);
+// La url con cada hueco reemplazado por una etiqueta de ejemplo, para validarla como cualquier otra.
+const sample = (url: string) => url.replace(HOLE, "x");
+
+function holeError(url: string): string | null {
+  const holes = urlHoles(url);
+  if (!holes.length) return null;
+  if (holes.length > 1) return "url: un solo hueco {campo}";
+  if (!/^[a-zA-Z]{1,30}$/.test(holes[0])) return "url: el hueco es {campo}, letras hasta 30";
+  // Solo la primera etiqueta completa del host, con un dominio fijo detrás: el valor del admin no elige el proveedor.
+  if (!/^https:\/\/\{[a-zA-Z]{1,30}\}\.[^/?#{}]+\.[^/?#{}]+(?:[/?][^{}]*)?$/.test(url)) {
+    return "url: el hueco va como primera etiqueta del host (https://{campo}.dominio.com/...)";
+  }
+  return null;
+}
+
 function isSetting(s: unknown): boolean {
   if (typeof s !== "object" || s === null) return false;
   const o = s as Record<string, unknown>;
   if (typeof o.field !== "string" || !/^[a-zA-Z]{1,30}$/.test(o.field)) return false;
   const keys = Object.keys(o).toSorted().join();
+  if (o.fills !== undefined) return o.fills === "url" && keys === "field,fills";
   if (o.variable === "MCP_FIXED_CLIENT_ID") return keys === "field,variable";
   return o.variable === "MCP_FIXED_CLIENT_SECRET" && o.secret === true && keys === "field,secret,variable";
 }
@@ -49,7 +70,11 @@ export function checkEntry(raw: unknown): string[] {
     errors.push("registry: el nombre del registro oficial, como com.notion/mcp");
   }
   if (typeof e.url !== "string") errors.push("url: falta");
-  else { const err = checkUrl(e.url); if (err) errors.push(err); }
+  else {
+    const hole = holeError(e.url);
+    if (hole) errors.push(hole);
+    else { const err = checkUrl(sample(e.url)); if (err) errors.push(err); }
+  }
   if (!text(e.name, 40)) errors.push("name: obligatorio, hasta 40");
   if (!text(e.tagline, 60)) errors.push("tagline: obligatorio, hasta 60");
   if (!text(e.description, 300)) errors.push("description: obligatoria, hasta 300");
@@ -59,8 +84,14 @@ export function checkEntry(raw: unknown): string[] {
     if (typeof l !== "object" || l === null || Object.keys(l).join() !== "es" || !text(l.es, 80)) errors.push("landing: { es } hasta 80");
   }
   if (!Array.isArray(e.settings)) errors.push("settings: tiene que ser una lista");
-  else for (const s of e.settings as Record<string, unknown>[]) if (!isSetting(s)) {
-    errors.push("settings: { field, variable: \"MCP_FIXED_CLIENT_ID\" } o { field, variable: \"MCP_FIXED_CLIENT_SECRET\", secret: true }");
+  else {
+    for (const s of e.settings as Record<string, unknown>[]) if (!isSetting(s)) {
+      errors.push("settings: { field, variable: \"MCP_FIXED_CLIENT_ID\" }, { field, variable: \"MCP_FIXED_CLIENT_SECRET\", secret: true } o { field, fills: \"url\" }");
+    }
+    // Cada hueco con su ajuste fills, y cada fills con su hueco.
+    const fills = (e.settings as Record<string, unknown>[]).filter((s) => s?.fills === "url").map((s) => s.field);
+    const holes = typeof e.url === "string" ? urlHoles(e.url) : [];
+    if (fills.toSorted().join() !== holes.toSorted().join()) errors.push("settings: cada hueco de la url con su { field, fills: \"url\" }");
   }
   if (!Array.isArray(e.trustedLogin) || !e.trustedLogin.every((t) => typeof t === "string" && checkUrl(t) === null)) {
     errors.push("trustedLogin: issuers https exactos, como https://github.com/login/oauth");

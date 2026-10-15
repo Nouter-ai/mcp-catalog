@@ -36,7 +36,8 @@
     },
     "url": {
       "type": "string",
-      "pattern": "^https://"
+      "pattern": "^https://",
+      "description": "https. Puede llevar un hueco {campo} como primera etiqueta del host, que llena un ajuste { field, fills: \"url\" }."
     },
     "name": {
       "type": "string",
@@ -110,6 +111,23 @@
               },
               "secret": {
                 "const": true
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "field",
+              "fills"
+            ],
+            "properties": {
+              "field": {
+                "type": "string",
+                "pattern": "^[a-zA-Z]{1,30}$"
+              },
+              "fills": {
+                "const": "url"
               }
             }
           }

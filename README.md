@@ -12,6 +12,10 @@ cualquier otro, nouter tiene "Any MCP server" y los servidores propios de cada e
 ## Proponer un servidor
 
 1. Un archivo `servers/<id>.json` (ver `schema/entry.schema.json` y las entradas que ya están).
+   Si la URL depende de cada empresa (NetSuite vive en el host de cada cuenta), va con un hueco `{campo}` como
+   primera etiqueta del host (`https://{accountId}.suitetalk.api.netsuite.com/...`) y un ajuste
+   `{ "field": "accountId", "fills": "url" }`. El admin carga el valor; nouter lo normaliza a una etiqueta DNS. El CI
+   no prueba esas URLs: se prueban en un tenant.
 2. El logo en `logos/<id>.svg`, un SVG de una pieza con el color de la marca (como los de Simple Icons).
 3. El id en `servers/order.json`, donde querés que aparezca.
 4. Un PR. El CI valida la entrada y prueba que la URL responda como servidor MCP.

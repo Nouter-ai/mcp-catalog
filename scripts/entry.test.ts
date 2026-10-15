@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { checkEntry, checkUrl } from "./entry.ts";
+import { checkEntry, checkUrl, urlHoles } from "./entry.ts";
 
 const base = {
   id: "notion", registry: "com.notion/mcp", url: "https://mcp.notion.com/mcp", name: "Notion",
@@ -92,4 +92,47 @@ test("github vuelve a estar reservado: es el gatekeeper nativo de nouter (v4)", 
 
 test("algo que no es un objeto", () => {
   for (const raw of [null, [], "x", 1]) assert.notDeepEqual(checkEntry(raw), []);
+});
+
+const ns = {
+  id: "netsuite", url: "https://{accountId}.suitetalk.api.netsuite.com/services/mcp/v1/all", name: "NetSuite",
+  color: "#FFFFFF", tagline: "Records", description: "NetSuite's MCP.", trustedLogin: [],
+  settings: [{ field: "accountId", fills: "url" }, { field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }],
+};
+const nsCon = (over: Record<string, unknown>) => ({ ...ns, ...over });
+
+test("un hueco en la primera etiqueta del host, con su ajuste fills, vale", () => {
+  assert.deepEqual(checkEntry(ns), []);
+  assert.deepEqual(urlHoles(ns.url), ["accountId"]);
+  assert.deepEqual(urlHoles("https://mcp.notion.com/mcp"), []);
+});
+
+test("el hueco: uno solo, como primera etiqueta completa del host", () => {
+  for (const url of [
+    "https://x.{accountId}.netsuite.com/mcp",            // no es la primera etiqueta
+    "https://{accountId}x.netsuite.com/mcp",             // no es la etiqueta completa
+    "https://{accountId}.netsuite.com/{accountId}",      // fuera del host
+    "https://mcp.netsuite.com/mcp?a={accountId}",        // en la query
+    "https://{accountId}.{otro}.netsuite.com/mcp",       // dos huecos
+    "https://{accountId}/mcp",                           // sin dominio fijo
+    "https://{account-id}.netsuite.com/mcp",             // nombre de campo inválido
+  ]) assert.notDeepEqual(checkEntry(nsCon({ url })), [], url);
+});
+
+test("cada hueco tiene su ajuste fills y cada fills su hueco", () => {
+  assert.notDeepEqual(checkEntry(nsCon({ settings: [{ field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }] })), []);
+  assert.notDeepEqual(checkEntry(nsCon({ settings: [{ field: "otro", fills: "url" }] })), []);
+  assert.notDeepEqual(checkEntry(con({ settings: [{ field: "accountId", fills: "url" }] })), []); // Notion, sin hueco
+});
+
+test("un ajuste fills no lleva variable ni secret, y solo llena la url", () => {
+  for (const s of [{ field: "accountId", fills: "url", variable: "MCP_FIXED_URL" },
+    { field: "accountId", fills: "url", secret: true }, { field: "accountId", fills: "host" }]) {
+    assert.notDeepEqual(checkEntry(nsCon({ settings: [s] })), [], JSON.stringify(s));
+  }
+});
+
+test("la URL con el hueco de ejemplo sigue las reglas de siempre", () => {
+  assert.notDeepEqual(checkEntry(nsCon({ url: "http://{accountId}.netsuite.com/mcp" })), []);
+  assert.notDeepEqual(checkEntry(nsCon({ url: "https://{accountId}.internal/mcp" })), []);
 });
