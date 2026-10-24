@@ -90,6 +90,10 @@ test("github vuelve a estar reservado: es el gatekeeper nativo de nouter (v4)", 
   assert.notDeepEqual(checkEntry(con({ id: "github", settings: cliente, trustedLogin: ["https://github.com/login/oauth"] })), []);
 });
 
+test("salesforce queda reservado: es el gatekeeper nativo de nouter", () => {
+  assert.notDeepEqual(checkEntry(con({ id: "salesforce", settings: cliente })), []);
+});
+
 test("algo que no es un objeto", () => {
   for (const raw of [null, [], "x", 1]) assert.notDeepEqual(checkEntry(raw), []);
 });

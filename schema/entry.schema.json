@@ -26,7 +26,8 @@
           "mcp",
           "google",
           "slack",
-          "github"
+          "github",
+          "salesforce"
         ]
       }
     },
