@@ -94,12 +94,17 @@ test("salesforce queda reservado: es el gatekeeper nativo de nouter", () => {
   assert.notDeepEqual(checkEntry(con({ id: "salesforce", settings: cliente })), []);
 });
 
+test("netsuite queda reservado: es el gatekeeper nativo de nouter", () => {
+  assert.notDeepEqual(checkEntry(con({ id: "netsuite", settings: cliente })), []);
+});
+
 test("algo que no es un objeto", () => {
   for (const raw of [null, [], "x", 1]) assert.notDeepEqual(checkEntry(raw), []);
 });
 
+// Un servidor ficticio con la URL de la cuenta: el id netsuite está reservado.
 const ns = {
-  id: "netsuite", url: "https://{accountId}.suitetalk.api.netsuite.com/services/mcp/v1/all", name: "NetSuite",
+  id: "cuenta", url: "https://{accountId}.suitetalk.api.netsuite.com/services/mcp/v1/all", name: "NetSuite",
   color: "#FFFFFF", tagline: "Records", description: "NetSuite's MCP.", trustedLogin: [],
   settings: [{ field: "accountId", fills: "url" }, { field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }],
 };
