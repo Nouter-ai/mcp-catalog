@@ -27,7 +27,8 @@
           "google",
           "slack",
           "github",
-          "salesforce"
+          "salesforce",
+          "netsuite"
         ]
       }
     },
