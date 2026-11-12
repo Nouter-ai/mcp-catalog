@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 import type { Entry } from "./entry.ts";
+import { isNative } from "./native.ts";
 import { NS, toEntry, toServerJson } from "./server-json.ts";
 
 const real: Entry[] = [];
 for (const f of (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json")) {
-  real.push(toEntry(JSON.parse(await readFile(new URL(`../servers/${f}`, import.meta.url), "utf8"))));
+  const raw = JSON.parse(await readFile(new URL(`../servers/${f}`, import.meta.url), "utf8"));
+  if (!isNative(raw)) real.push(toEntry(raw));
 }
 const withHole: Entry = {
   id: "acme", url: "https://{accountId}.acme.example.com/mcp", name: "Acme", color: "#112233", tagline: "Acme things",

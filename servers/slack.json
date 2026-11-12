@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/slack",
+  "title": "Slack",
+  "description": "Channels, messages and search",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "slack",
+      "color": "#FFFFFF",
+      "landing": "Slack, con la app de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-slack",
+        "settings": [
+          {
+            "field": "clientId",
+            "variable": "CLIENT_ID",
+            "into": "secrets"
+          },
+          {
+            "field": "clientSecret",
+            "variable": "CLIENT_SECRET",
+            "into": "secrets",
+            "secret": true
+          }
+        ]
+      }
+    }
+  }
+}

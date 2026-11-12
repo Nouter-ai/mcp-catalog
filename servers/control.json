@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/control",
+  "title": "Nouter control plane",
+  "description": "Tenants, versions, flags and costs of Nouter",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "control",
+      "color": "#FFFFFF",
+      "gatekeeper": {
+        "package": "gatekeeper-control",
+        "flag": "gatekeeper-control",
+        "zoneVars": {
+          "CONTROL_URL": "https://ops.{zone}"
+        }
+      }
+    }
+  }
+}

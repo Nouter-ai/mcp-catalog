@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/salesforce",
+  "title": "Salesforce",
+  "description": "Records, search and reports in your org",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "salesforce",
+      "color": "#FFFFFF",
+      "landing": "Salesforce, con la app de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-salesforce",
+        "settings": [
+          {
+            "field": "clientId",
+            "variable": "CLIENT_ID",
+            "into": "secrets"
+          },
+          {
+            "field": "clientSecret",
+            "variable": "CLIENT_SECRET",
+            "into": "secrets",
+            "secret": true,
+            "optional": true
+          },
+          {
+            "field": "loginUrl",
+            "variable": "LOGIN_URL",
+            "optional": true
+          }
+        ]
+      }
+    }
+  }
+}

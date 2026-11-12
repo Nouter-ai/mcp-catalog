@@ -19,7 +19,8 @@
         "es": "Cloudflare"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-cloudflare"
     }
   }
 }

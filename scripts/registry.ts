@@ -4,6 +4,7 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { isNative } from "./native.ts";
 import { checkServerJson } from "./server-check.ts";
 import type { ServerJson } from "./server-json.ts";
 
@@ -16,6 +17,7 @@ export async function buildRegistry(dir: string, _version: string, publishedAt: 
   const rows: unknown[] = [];
   for (const id of order) {
     const server: ServerJson = JSON.parse(await readFile(join(dir, "servers", `${id}.json`), "utf8"));
+    if (isNative(server)) continue; // un gatekeeper del OS no es un servidor remoto: el estándar no tiene tipo para él
     const errors = checkServerJson(server);
     if (errors.length) throw new Error(`${id}: ${errors.join("; ")}`);
     const row = { server, _meta: { [OFFICIAL]: { status: "active", publishedAt, isLatest: true } } };

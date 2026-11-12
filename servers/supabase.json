@@ -19,7 +19,8 @@
         "es": "Supabase"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-supabase"
     }
   }
 }

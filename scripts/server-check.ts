@@ -3,6 +3,7 @@
 // Capa 2: las reglas de Nouter de scripts/entry.ts sobre la entrada ya convertida. Devuelve los errores, [] si vale.
 
 import { checkEntry } from "./entry.ts";
+import { checkNativeServerJson, isNative } from "./native.ts";
 import { NS, SCHEMA_URL, toEntry, type ServerJson } from "./server-json.ts";
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
@@ -29,6 +30,9 @@ function layerStandard(s: Record<string, unknown>): string[] {
     if (!isObj(n) || !str(n.id, 1, 20) || !str(n.description, 1, 300) || !str(n.color, 7, 7)
       || (n.landing !== undefined && !(isObj(n.landing) && str(n.landing.es, 1, 80)))) errors.push(`_meta.${NS}: id, description, color y landing?`);
     else {
+      if (n.nativeGatekeeper !== undefined && !(typeof n.nativeGatekeeper === "string" && /^gatekeeper-[a-z-]+$/.test(n.nativeGatekeeper))) {
+        errors.push(`_meta.${NS}.nativeGatekeeper: el paquete del gatekeeper nativo de este servicio (gatekeeper-notion)`);
+      }
       if (!Array.isArray(n.settings)) errors.push(`_meta.${NS}.settings: tiene que ser una lista`);
       if (!Array.isArray(n.trustedLogin)) errors.push(`_meta.${NS}.trustedLogin: tiene que ser una lista`);
     }
@@ -38,6 +42,7 @@ function layerStandard(s: Record<string, unknown>): string[] {
 
 export function checkServerJson(raw: unknown): string[] {
   if (!isObj(raw)) return ["la entrada tiene que ser un objeto"];
+  if (isNative(raw)) return checkNativeServerJson(raw);
   const e1 = layerStandard(raw);
   if (e1.length) return e1;
   return checkEntry(toEntry(raw as unknown as ServerJson));

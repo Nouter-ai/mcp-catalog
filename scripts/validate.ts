@@ -36,7 +36,7 @@ export async function versionCheck(root: string, base: string, ids: string[]): P
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = resolve(fileURLToPath(import.meta.url), "../..");
   const catalog = await buildCatalog(root, "dev");
-  console.log(`${catalog.servers.length} entradas válidas`);
+  console.log(`${catalog.servers.length + catalog.natives.length} entradas válidas (${catalog.servers.length} MCP, ${catalog.natives.length} gatekeepers nativos)`);
   const i = process.argv.indexOf("--probe");
   if (i !== -1) {
     const base = process.argv[i + 1];

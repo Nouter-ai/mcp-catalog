@@ -19,7 +19,8 @@
         "es": "Linear"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-linear"
     }
   }
 }

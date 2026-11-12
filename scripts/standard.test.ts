@@ -19,14 +19,15 @@ test("cada servers/<id>.json es un server.json del estándar, con lo de Nouter s
   const { readdir } = await import("node:fs/promises");
   const dir = new URL("../servers/", import.meta.url);
   const files = (await readdir(dir)).filter((f) => f.endsWith(".json") && f !== "order.json");
-  assert.equal(files.length, 7);
+  assert.equal(files.length, 26);
   for (const f of files) {
     const s = JSON.parse(await readFile(new URL(f, dir), "utf8"));
+    const nativa = !!s._meta?.["ai.nouter.directory"]?.gatekeeper;
     assert.match(s.$schema, /server\.schema\.json$/, f);
     assert.match(s.name, /^[a-zA-Z0-9.-]+\/[a-zA-Z0-9._-]+$/, f);
     assert.ok(s.description.length >= 1 && s.description.length <= 100, f);
     assert.ok(s.title && s.version, f);
-    assert.equal(s.remotes[0].type, "streamable-http", f);
+    if (nativa) assert.equal("remotes" in s, false, f); else assert.equal(s.remotes[0].type, "streamable-http", f);
     assert.deepEqual(Object.keys(s._meta), ["ai.nouter.directory"], f);
     assert.equal(`${s._meta["ai.nouter.directory"].id}.json`, f);
   }

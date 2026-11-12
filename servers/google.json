@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/google",
+  "title": "Google",
+  "description": "Gmail, Calendar, Tasks, Drive, Docs, Sheets and Slides",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "google",
+      "color": "#FFFFFF",
+      "landing": "Google (Gmail, Calendar, Tasks, Docs, Sheets, Slides), con la app de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-google",
+        "relay": true,
+        "secrets": {
+          "CLIENT_ID": "GOOGLE_CONNECTOR_CLIENT_ID",
+          "CLIENT_SECRET": "GOOGLE_CONNECTOR_CLIENT_SECRET"
+        },
+        "settings": [
+          {
+            "field": "clientId",
+            "variable": "CLIENT_ID",
+            "into": "secrets"
+          },
+          {
+            "field": "clientSecret",
+            "variable": "CLIENT_SECRET",
+            "into": "secrets",
+            "secret": true
+          }
+        ]
+      }
+    }
+  }
+}

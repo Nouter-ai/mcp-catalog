@@ -19,7 +19,8 @@
         "es": "Notion"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-notion"
     }
   }
 }

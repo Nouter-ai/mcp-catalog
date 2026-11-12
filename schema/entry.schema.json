@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Nouter-ai/mcp-catalog/schema/entry.schema.json",
   "title": "Entrada del Directory de MCP de nouter (server.json del MCP Registry)",
-  "description": "Para el editor: el server.json del estándar (schema/vendor) más lo de Nouter en _meta. La validación que manda es scripts/server-check.ts.",
+  "description": "Para el editor: el server.json del estándar (schema/vendor) más lo de Nouter en _meta, de un servidor MCP remoto. Las entradas de gatekeepers nativos (sin remotes) y la validación que manda están en scripts/server-check.ts y scripts/native.ts.",
   "allOf": [
     {
       "$ref": "vendor/server.schema.json"
@@ -62,14 +62,31 @@
               "pattern": "^(?!mcp-)[a-z][a-z0-9-]{0,19}$",
               "not": {
                 "enum": [
+                  "confluence",
                   "context",
-                  "scheduler",
-                  "mcp",
-                  "google",
-                  "slack",
+                  "control",
+                  "delivery",
+                  "email",
+                  "emdash",
+                  "eset",
                   "github",
+                  "gitlab",
+                  "google",
+                  "hexnode",
+                  "homeassistant",
+                  "mcp",
+                  "mcp-portal",
+                  "microsoft",
+                  "netsuite",
+                  "nouter-platform",
+                  "nouter-sor",
                   "salesforce",
-                  "netsuite"
+                  "scheduler",
+                  "slack",
+                  "spotify",
+                  "websearch",
+                  "x",
+                  "zoominfo"
                 ]
               }
             },

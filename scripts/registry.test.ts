@@ -11,7 +11,9 @@ const OFFICIAL = "io.modelcontextprotocol.registry/official";
 
 test("el catalog.json de las entradas migradas es idéntico al v8 que usa yunta-control", async () => {
   const v8 = JSON.parse(await readFile(new URL("../fixtures/catalog-v8.json", import.meta.url), "utf8"));
-  assert.deepEqual(await buildCatalog(root, "v8"), v8);
+  const { natives, nativePending, ...mcp } = await buildCatalog(root, "v8");
+  assert.deepEqual(mcp, v8); // lo de los MCP no cambió; los nativos son una lista aparte
+  assert.ok(natives.length >= 19 && nativePending.length === 4);
 });
 
 test("la lista tiene la forma de /v0.1/servers, una fila por servidor y en el orden del catálogo", async () => {
