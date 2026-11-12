@@ -20,7 +20,14 @@
       },
       "settings": [],
       "trustedLogin": [],
-      "nativeGatekeeper": "gatekeeper-supabase"
+      "nativeGatekeeper": "gatekeeper-supabase",
+      "categories": [
+        "databases",
+        "engineering"
+      ],
+      "publisher": "Supabase",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

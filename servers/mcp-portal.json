@@ -34,7 +34,14 @@
           }
         ],
         "flag": "directory-nativos"
-      }
+      },
+      "categories": [
+        "engineering",
+        "automation-workflows"
+      ],
+      "publisher": "Cloudflare",
+      "verified": true,
+      "signIn": "company"
     }
   }
 }

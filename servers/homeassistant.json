@@ -11,7 +11,14 @@
       "gatekeeper": {
         "package": "gatekeeper-homeassistant",
         "flag": "directory-nativos"
-      }
+      },
+      "categories": [
+        "automation-workflows",
+        "engineering"
+      ],
+      "publisher": "Home Assistant",
+      "verified": true,
+      "signIn": "company"
     }
   }
 }

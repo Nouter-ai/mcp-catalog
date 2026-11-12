@@ -24,7 +24,13 @@
           }
         ],
         "flag": "directory-nativos"
-      }
+      },
+      "categories": [
+        "design-media"
+      ],
+      "publisher": "Spotify",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

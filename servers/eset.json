@@ -11,7 +11,14 @@
       "gatekeeper": {
         "package": "gatekeeper-eset",
         "flag": "conector-eset"
-      }
+      },
+      "categories": [
+        "engineering",
+        "logs-errors"
+      ],
+      "publisher": "ESET",
+      "verified": true,
+      "signIn": "company"
     }
   }
 }

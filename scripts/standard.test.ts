@@ -18,7 +18,7 @@ test("el esquema del estándar está fijado: la versión publicada, con su URL",
 test("cada servers/<id>.json es un server.json del estándar, con lo de Nouter solo bajo su namespace", async () => {
   const { readdir } = await import("node:fs/promises");
   const dir = new URL("../servers/", import.meta.url);
-  const files = (await readdir(dir)).filter((f) => f.endsWith(".json") && f !== "order.json");
+  const files = (await readdir(dir)).filter((f) => f.endsWith(".json") && f !== "order.json" && f !== "added-baseline.json");
   assert.equal(files.length, 26);
   for (const f of files) {
     const s = JSON.parse(await readFile(new URL(f, dir), "utf8"));

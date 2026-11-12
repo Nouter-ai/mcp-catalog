@@ -20,7 +20,14 @@
       },
       "settings": [],
       "trustedLogin": [],
-      "nativeGatekeeper": "gatekeeper-notion"
+      "nativeGatekeeper": "gatekeeper-notion",
+      "categories": [
+        "notes-memory",
+        "reference-docs"
+      ],
+      "publisher": "Notion",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

@@ -14,7 +14,14 @@
         "zoneVars": {
           "CONTROL_URL": "https://ops.{zone}"
         }
-      }
+      },
+      "categories": [
+        "engineering",
+        "finance"
+      ],
+      "publisher": "Nouter",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

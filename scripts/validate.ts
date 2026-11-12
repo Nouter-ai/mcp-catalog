@@ -6,16 +6,17 @@ import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildCatalog } from "./build.ts";
+import { buildDirectory } from "./directory.ts";
 import { urlHoles, type Entry } from "./entry.ts";
 import { probe } from "./probe.ts";
 import { versionErrors } from "./server-check.ts";
-import type { ServerJson } from "./server-json.ts";
+import { NOT_ENTRIES, type ServerJson } from "./server-json.ts";
 
 // Una url con hueco no tiene un host de ejemplo que resuelva: se prueba en un tenant (docs/yunta/netsuite.md).
 export const probeable = (e: Pick<Entry, "url">): boolean => urlHoles(e.url).length === 0;
 
 export function changedIds(files: string[]): string[] {
-  return files.flatMap((f) => { const m = /^servers\/([a-z0-9-]+)\.json$/.exec(f); return m && m[1] !== "order" ? [m[1]] : []; });
+  return files.flatMap((f) => { const m = /^servers\/([a-z0-9-]+)\.json$/.exec(f); return m && !NOT_ENTRIES.includes(`${m[1]}.json`) ? [m[1]] : []; });
 }
 
 // Cambiar la URL o la autenticación obliga a reconectar: la versión tiene que subir. Una base en el formato viejo (el PR
@@ -37,6 +38,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const root = resolve(fileURLToPath(import.meta.url), "../..");
   const catalog = await buildCatalog(root, "dev");
   console.log(`${catalog.servers.length + catalog.natives.length} entradas válidas (${catalog.servers.length} MCP, ${catalog.natives.length} gatekeepers nativos)`);
+  // El índice del Directory: valida las categorías y los destacados con una fecha fija (la real sale de git al armar el release).
+  const directory = await buildDirectory(root, "dev", () => "1970-01-01T00:00:00Z");
+  console.log(`directory.json: ${directory.entries.length} entradas, colecciones: ${directory.featured.map((c) => c.id).join(", ")}`);
   const i = process.argv.indexOf("--probe");
   if (i !== -1) {
     const base = process.argv[i + 1];

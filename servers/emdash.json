@@ -32,7 +32,14 @@
             "optional": true
           }
         ]
-      }
+      },
+      "categories": [
+        "websites",
+        "design-media"
+      ],
+      "publisher": "Cloudflare",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

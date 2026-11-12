@@ -24,7 +24,13 @@
             "secret": true
           }
         ]
-      }
+      },
+      "categories": [
+        "email-messages"
+      ],
+      "publisher": "Slack",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

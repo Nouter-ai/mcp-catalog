@@ -2,6 +2,7 @@
 // a mano para el subconjunto que usamos; los topes son los del esquema fijado) y las restricciones de Nouter sobre él.
 // Capa 2: las reglas de Nouter de scripts/entry.ts sobre la entrada ya convertida. Devuelve los errores, [] si vale.
 
+import { directoryMetaErrors } from "./directory-meta.ts";
 import { checkEntry } from "./entry.ts";
 import { checkNativeServerJson, isNative } from "./native.ts";
 import { NS, SCHEMA_URL, toEntry, type ServerJson } from "./server-json.ts";
@@ -33,6 +34,7 @@ function layerStandard(s: Record<string, unknown>): string[] {
       if (n.nativeGatekeeper !== undefined && !(typeof n.nativeGatekeeper === "string" && /^gatekeeper-[a-z-]+$/.test(n.nativeGatekeeper))) {
         errors.push(`_meta.${NS}.nativeGatekeeper: el paquete del gatekeeper nativo de este servicio (gatekeeper-notion)`);
       }
+      errors.push(...directoryMetaErrors(n, ["id", "description", "color", "landing", "settings", "trustedLogin", "nativeGatekeeper", "categories", "publisher", "verified", "signIn"]));
       if (!Array.isArray(n.settings)) errors.push(`_meta.${NS}.settings: tiene que ser una lista`);
       if (!Array.isArray(n.trustedLogin)) errors.push(`_meta.${NS}.trustedLogin: tiene que ser una lista`);
     }

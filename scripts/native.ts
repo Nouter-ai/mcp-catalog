@@ -3,6 +3,8 @@
 // el paquete, los ajustes que carga el admin (lo que el gatekeeper declara en deploy-inputs.json), la app de Nouter por el
 // relay, el flag y las variables de zona. docs/nouter/producto/conectores/nouter-directory.md.
 
+import type { DirectoryMeta } from "./directory-meta.ts";
+import { directoryMetaErrors } from "./directory-meta.ts";
 import { NS, SCHEMA_URL } from "./server-json.ts";
 
 export interface TenantSetting { field: string; variable: string; secret?: boolean; into?: "vars" | "secrets"; optional?: boolean }
@@ -17,18 +19,18 @@ interface GatekeeperMeta { package: string; relay?: boolean; secrets?: Record<st
   zoneVars?: Record<string, string>; offered?: false }
 export interface NativeServerJson {
   $schema: string; name: string; title: string; description: string; version: string;
-  _meta: Record<string, { id: string; color: string; landing?: string; gatekeeper: GatekeeperMeta }>;
+  _meta: Record<string, { id: string; color: string; landing?: string; gatekeeper: GatekeeperMeta } & Partial<DirectoryMeta>>;
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 export const isNative = (raw: unknown): boolean => isObj(raw) && isObj(raw._meta) && isObj(raw._meta[NS]) && isObj((raw._meta[NS] as Record<string, unknown>).gatekeeper);
 
-export function toNativeServerJson(n: NativeEntry, version = "1.0.0"): NativeServerJson {
+export function toNativeServerJson(n: NativeEntry, version = "1.0.0", directory?: DirectoryMeta): NativeServerJson {
   const g: GatekeeperMeta = { package: n.pkg, ...(n.relay ? { relay: true } : {}), ...(n.secrets ? { secrets: n.secrets } : {}),
     ...(n.settings ? { settings: n.settings } : {}), ...(n.flag ? { flag: n.flag } : {}), ...(n.zoneVars ? { zoneVars: n.zoneVars } : {}),
     ...(n.offered === false ? { offered: false as const } : {}) };
   return { $schema: SCHEMA_URL, name: `ai.nouter/${n.id}`, title: n.name, description: n.tagline, version,
-    _meta: { [NS]: { id: n.id, color: n.color, ...(n.landing ? { landing: n.landing } : {}), gatekeeper: g } } };
+    _meta: { [NS]: { id: n.id, color: n.color, ...(n.landing ? { landing: n.landing } : {}), gatekeeper: g, ...directory } } };
 }
 
 export function toNative(s: NativeServerJson): NativeEntry {
@@ -106,6 +108,7 @@ export function checkNativeServerJson(raw: unknown): string[] {
   if (Object.keys(m).join() !== NS) errors.push(`_meta: solo la clave ${NS}`);
   if (typeof n.color !== "string" || !/^#[0-9A-F]{6}$/.test(n.color)) errors.push("_meta: color #RRGGBB en mayúsculas");
   if (n.landing !== undefined && !str(n.landing, 1, 80)) errors.push("_meta: landing hasta 80");
+  errors.push(...directoryMetaErrors(n, ["id", "color", "landing", "gatekeeper", "categories", "publisher", "verified", "signIn"]));
   if (!isObj(n.gatekeeper)) errors.push("_meta: gatekeeper"); else errors.push(...checkGatekeeper(id, n.gatekeeper));
   return errors;
 }

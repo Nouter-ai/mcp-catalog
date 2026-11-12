@@ -6,7 +6,7 @@ import { isNative } from "./native.ts";
 import { NS, toEntry, toServerJson } from "./server-json.ts";
 
 const real: Entry[] = [];
-for (const f of (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json")) {
+for (const f of (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json" && f !== "added-baseline.json")) {
   const raw = JSON.parse(await readFile(new URL(`../servers/${f}`, import.meta.url), "utf8"));
   if (!isNative(raw)) real.push(toEntry(raw));
 }

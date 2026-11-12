@@ -19,7 +19,14 @@
         "es": "Stripe"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "categories": [
+        "finance",
+        "retail-ecommerce"
+      ],
+      "publisher": "Stripe",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

@@ -11,7 +11,14 @@
       "gatekeeper": {
         "package": "gatekeeper-delivery",
         "flag": "salesforce-delivery"
-      }
+      },
+      "categories": [
+        "engineering",
+        "sales"
+      ],
+      "publisher": "Nouter",
+      "verified": true,
+      "signIn": "company"
     }
   }
 }

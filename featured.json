@@ -1,0 +1,9 @@
+{
+  "collections": [
+    { "id": "sales-essentials", "title": "Sales", "subtitle": "Find, qualify and close", "items": ["salesforce", "twenty", "notion"] },
+    { "id": "engineering-stack", "title": "Engineering", "subtitle": "Code, databases and deploys", "items": ["github", "linear", "supabase", "cloudflare"] },
+    { "id": "finance-ops", "title": "Finance", "subtitle": "Money in and out", "items": ["stripe", "netsuite", "salesforce"] },
+    { "id": "team-communication", "title": "Communication", "subtitle": "Talk to your team", "items": ["slack", "google", "notion"] },
+    { "id": "publish-with-ai", "title": "Content", "subtitle": "Write, publish and remember", "items": ["notion", "emdash", "atlassian"] }
+  ]
+}
