@@ -3,8 +3,8 @@
 // el paquete, los ajustes que carga el admin (lo que el gatekeeper declara en deploy-inputs.json), la app de Nouter por el
 // relay, el flag y las variables de zona. docs/nouter/producto/conectores/nouter-directory.md.
 
-import type { DirectoryMeta } from "./directory.ts";
-import { directoryMetaErrors } from "./directory.ts";
+import type { DirectoryMeta } from "./directory-meta.ts";
+import { directoryMetaErrors } from "./directory-meta.ts";
 import { NS, SCHEMA_URL } from "./server-json.ts";
 
 export interface TenantSetting { field: string; variable: string; secret?: boolean; into?: "vars" | "secrets"; optional?: boolean }

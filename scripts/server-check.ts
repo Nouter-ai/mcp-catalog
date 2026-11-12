@@ -2,7 +2,7 @@
 // a mano para el subconjunto que usamos; los topes son los del esquema fijado) y las restricciones de Nouter sobre él.
 // Capa 2: las reglas de Nouter de scripts/entry.ts sobre la entrada ya convertida. Devuelve los errores, [] si vale.
 
-import { directoryMetaErrors } from "./directory.ts";
+import { directoryMetaErrors } from "./directory-meta.ts";
 import { checkEntry } from "./entry.ts";
 import { checkNativeServerJson, isNative } from "./native.ts";
 import { NS, SCHEMA_URL, toEntry, type ServerJson } from "./server-json.ts";

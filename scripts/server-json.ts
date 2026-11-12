@@ -2,7 +2,7 @@
 // (schema/vendor/server.schema.json). Lo de Nouter va en _meta["ai.nouter.directory"]; el estándar no tiene dónde.
 // Puras y en los dos sentidos: toEntry(toServerJson(e)) es e.
 
-import type { DirectoryMeta } from "./directory.ts";
+import type { DirectoryMeta } from "./directory-meta.ts";
 import type { Entry, Setting } from "./entry.ts";
 
 export const NS = "ai.nouter.directory";

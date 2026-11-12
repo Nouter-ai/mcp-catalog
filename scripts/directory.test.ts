@@ -120,3 +120,12 @@ test("el release publica directory.json y corre con el historial completo", asyn
   assert.match(y, /fetch-depth: 0/);
   assert.match(y, /dist\/directory\.json/);
 });
+
+test("sin importaciones circulares: lo que directory.ts importa no lo importa a él; los tipos y las reglas de los campos viven en un módulo hoja", async () => {
+  const src = (f: string) => readFile(new URL(`./${f}`, import.meta.url), "utf8");
+  for (const f of ["native.ts", "server-check.ts", "server-json.ts", "entry.ts", "logo.ts"]) assert.doesNotMatch(await src(f), /from "\.\/directory\.ts"/, f);
+  const leaf = await src("directory-meta.ts");
+  assert.doesNotMatch(leaf, /from "\.\//, "directory-meta.ts no importa nada de este repo");
+  assert.match(leaf, /export function directoryMetaErrors/);
+  assert.match(leaf, /export const CATEGORIES/);
+});
