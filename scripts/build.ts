@@ -1,7 +1,7 @@
 // Arma dist/catalog.json: las entradas en el orden de servers/order.json, con el logo como data URI.
-// Uso: node scripts/build.ts vN   (sin versión, "dev")
+// Uso: node scripts/build.ts vN [fecha ISO del release]   (sin versión, "dev"). También arma dist/registry/.
 
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Entry } from "./entry.ts";
@@ -59,4 +59,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   await mkdir(join(root, "dist"), { recursive: true });
   await writeFile(join(root, "dist", "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`);
   console.log(`dist/catalog.json: ${catalog.version}, ${catalog.servers.length} servidores`);
+  // El registro estático (scripts/registry.ts). La fecha es la del release (tercer argumento); sin ella, la época, para que
+  // un armado local sea reproducible.
+  const { buildRegistry } = await import("./registry.ts");
+  const files = await buildRegistry(root, catalog.version, process.argv[3] ?? "1970-01-01T00:00:00Z");
+  await rm(join(root, "dist", "registry"), { recursive: true, force: true });
+  for (const [path, body] of files) {
+    await mkdir(join(root, "dist", "registry", path, ".."), { recursive: true });
+    await writeFile(join(root, "dist", "registry", path), body);
+  }
+  console.log(`dist/registry: ${files.size} archivos`);
 }

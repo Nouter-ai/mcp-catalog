@@ -1,0 +1,108 @@
+{
+  "version": "v8",
+  "servers": [
+    {
+      "id": "notion",
+      "registry": "com.notion/mcp",
+      "url": "https://mcp.notion.com/mcp",
+      "name": "Notion",
+      "landing": {
+        "es": "Notion"
+      },
+      "color": "#FFFFFF",
+      "tagline": "Pages, databases and comments",
+      "description": "Notion's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%23000000%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3ENotion%3C%2Ftitle%3E%3Cpath%20d%3D%22M4.459%204.208c.746.606%201.026.56%202.428.466l13.215-.793c.28%200%20.047-.28-.046-.326L17.86%201.968c-.42-.326-.981-.7-2.055-.607L3.01%202.295c-.466.046-.56.28-.374.466zm.793%203.08v13.904c0%20.747.373%201.027%201.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42%200%20.84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748%200-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21%2019s0%20.84-1.168.84l-3.222.186c-.093-.186%200-.653.327-.746l.84-.233V9.854L7.822%209.76c-.094-.42.14-1.026.793-1.073l3.456-.233%204.764%207.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936%201.035l13.31-.98c1.634-.14%202.055-.047%203.082.7l4.249%202.986c.7.513.934.653.934%201.213v16.378c0%201.026-.373%201.634-1.68%201.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54%201.447-1.632z%22%2F%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "linear",
+      "registry": "app.linear/linear",
+      "url": "https://mcp.linear.app/mcp",
+      "name": "Linear",
+      "landing": {
+        "es": "Linear"
+      },
+      "color": "#FFFFFF",
+      "tagline": "Issues, projects and comments",
+      "description": "Linear's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%235E6AD2%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3ELinear%3C%2Ftitle%3E%3Cpath%20d%3D%22M2.886%204.18A11.982%2011.982%200%200%201%2011.99%200C18.624%200%2024%205.376%2024%2012.009c0%203.64-1.62%206.903-4.18%209.105L2.887%204.18ZM1.817%205.626l16.556%2016.556c-.524.33-1.075.62-1.65.866L.951%207.277c.247-.575.537-1.126.866-1.65ZM.322%209.163l14.515%2014.515c-.71.172-1.443.282-2.195.322L0%2011.358a12%2012%200%200%201%20.322-2.195Zm-.17%204.862%209.823%209.824a12.02%2012.02%200%200%201-9.824-9.824Z%22%2F%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "atlassian",
+      "registry": "com.atlassian/atlassian-mcp-server",
+      "url": "https://mcp.atlassian.com/v2/mcp",
+      "name": "Atlassian",
+      "landing": {
+        "es": "Jira y Confluence"
+      },
+      "color": "#FFFFFF",
+      "tagline": "Jira issues and Confluence pages",
+      "description": "Atlassian's official MCP server for Jira and Confluence. Your Atlassian admin has to allow this workspace's domain first, in Rovo > MCP server. Writes wait for your approval.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%230052CC%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3EAtlassian%3C%2Ftitle%3E%3Cpath%20d%3D%22M7.12%2011.084a.683.683%200%2000-1.16.126L.075%2022.974a.703.703%200%2000.63%201.018h8.19a.678.678%200%2000.63-.39c1.767-3.65.696-9.203-2.406-12.52zM11.434.386a15.515%2015.515%200%2000-.906%2015.317l3.95%207.9a.703.703%200%2000.628.388h8.19a.703.703%200%2000.63-1.017L12.63.38a.664.664%200%2000-1.196.006z%22%2F%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "cloudflare",
+      "url": "https://mcp.cloudflare.com/mcp",
+      "name": "Cloudflare",
+      "landing": {
+        "es": "Cloudflare"
+      },
+      "color": "#FFFFFF",
+      "tagline": "Your Cloudflare account",
+      "description": "Cloudflare's official MCP server. Its execute tool runs code against the API, so review each approval carefully.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%23F38020%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3ECloudflare%3C%2Ftitle%3E%3Cpath%20d%3D%22M16.5088%2016.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559%200%200%201-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489%202.1601-.8868%202.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.168-.5625-2.5463-2.835-4.4453-5.5499-4.4453-2.5039%200-4.6284%201.6177-5.3876%203.8614-.4927-.3658-1.1187-.5625-1.794-.499-1.2026.119-2.1665%201.083-2.2861%202.2856-.0283.31-.0069.6128.0635.894C1.5683%2013.171%200%2014.7754%200%2016.752c0%20.1748.0142.3515.0352.5273.0141.083.0844.1475.1689.1475h15.9814c.0909%200%20.1758-.0645.2032-.1553l.12-.4268zm2.7568-5.5634c-.0771%200-.1611%200-.2383.0112-.0566%200-.1054.0415-.127.0976l-.3378%201.1744c-.1475.5068-.0918.9707.1543%201.3164.2256.3164.6055.498%201.0625.5195l1.8437.1133c.0557%200%20.1055.0263.1329.0703.0283.043.0351.1074.0214.1562-.0283.084-.1132.1485-.204.1553l-1.921.1123c-1.041.0488-2.1582.8867-2.5527%201.914l-.1406.3585c-.0283.0713.0215.1416.0986.1416h6.5977c.0771%200%20.1474-.0489.169-.126.1122-.4082.1757-.837.1757-1.2803%200-2.6025-2.125-4.727-4.7344-4.727%22%2F%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "supabase",
+      "registry": "com.supabase/mcp",
+      "url": "https://mcp.supabase.com/mcp",
+      "name": "Supabase",
+      "landing": {
+        "es": "Supabase"
+      },
+      "color": "#FFFFFF",
+      "tagline": "Projects, databases and functions",
+      "description": "Supabase's official MCP server. Writes, including SQL, wait for your approval. Avoid connecting production projects.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%233ECF8E%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3ESupabase%3C%2Ftitle%3E%3Cpath%20d%3D%22M11.9%201.036c-.015-.986-1.26-1.41-1.874-.637L.764%2012.05C-.33%2013.427.65%2015.455%202.409%2015.455h9.579l.113%207.51c.014.985%201.259%201.408%201.873.636l9.262-11.653c1.093-1.375.113-3.403-1.645-3.403h-9.642z%22%2F%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "stripe",
+      "registry": "com.stripe/mcp",
+      "url": "https://mcp.stripe.com",
+      "name": "Stripe",
+      "landing": {
+        "es": "Stripe"
+      },
+      "color": "#FFFFFF",
+      "tagline": "Customers, payments and invoices",
+      "description": "Stripe's official MCP server. Writes wait for your approval, and Stripe asks its own confirmation for refunds and payouts.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%23635BFF%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3EStripe%3C%2Ftitle%3E%3Cpath%20d%3D%22M13.976%209.15c-2.172-.806-3.356-1.426-3.356-2.409%200-.831.683-1.305%201.901-1.305%202.227%200%204.515.858%206.09%201.631l.89-5.494C18.252.975%2015.697%200%2012.165%200%209.667%200%207.589.654%206.104%201.872%204.56%203.147%203.757%204.992%203.757%207.218c0%204.039%202.467%205.76%206.476%207.219%202.585.92%203.445%201.574%203.445%202.583%200%20.98-.84%201.545-2.354%201.545-1.875%200-4.965-.921-6.99-2.109l-.9%205.555C5.175%2022.99%208.385%2024%2011.714%2024c2.641%200%204.843-.624%206.328-1.813%201.664-1.305%202.525-3.236%202.525-5.732%200-4.128-2.524-5.851-6.594-7.305h.003z%22%2F%3E%3C%2Fsvg%3E"
+    },
+    {
+      "id": "twenty",
+      "url": "https://api.twenty.com/mcp",
+      "name": "Twenty",
+      "landing": {
+        "es": "Twenty"
+      },
+      "color": "#FFFFFF",
+      "tagline": "People, companies and opportunities",
+      "description": "Twenty's official MCP server, for Twenty Cloud workspaces. Writes wait for your approval. A self-hosted Twenty can be added as your company's own MCP server.",
+      "settings": [],
+      "trustedLogin": [],
+      "logo": "data:image/svg+xml,%3Csvg%20fill%3D%22%23000000%22%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ctitle%3ETwenty%3C%2Ftitle%3E%3Cpath%20d%3D%22M20.97%200H3.03A3.03%203.03%200%200%200%200%203.03v17.94A3.03%203.03%200%200%200%203.03%2024h17.94A3.03%203.03%200%200%200%2024%2020.97V3.03A3.03%203.03%200%200%200%2020.97%200ZM4.813%208.936a2.376%202.376%200%200%201%202.374-2.375h4.573c.067%200%20.129.04.157.103a.172.172%200%200%201-.03.185l-1.002%201.088a.924.924%200%200%201-.678.299H7.2a.713.713%200%200%200-.713.713v1.796a.418.418%200%200%201-.418.419h-.836a.418.418%200%200%201-.419-.419V8.936zm14.224%206.128a2.376%202.376%200%200%201-2.374%202.375h-1.944a2.376%202.376%200%200%201-2.375-2.375v-3.401c0-.231.087-.454.243-.625l1.134-1.23a.172.172%200%200%201%20.298.115v5.13c0%20.393.32.713.713.713h1.92c.393%200%20.713-.32.713-.713V8.949a.713.713%200%200%200-.713-.713h-2.233c-.255%200-.499.108-.674.295l-6.658%207.235h4c.232%200%20.419.187.419.418v.837a.418.418%200%200%201-.419.418h-5.39a.886.886%200%200%201-.886-.886v-.443c0-.223.083-.436.234-.6l7.465-8.109a2.603%202.603%200%200%201%201.916-.84h2.235a2.376%202.376%200%200%201%202.375%202.375v6.128z%22%2F%3E%3C%2Fsvg%3E"
+    }
+  ]
+}
