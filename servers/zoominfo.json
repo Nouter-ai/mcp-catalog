@@ -24,7 +24,14 @@
           }
         ],
         "flag": "directory-nativos"
-      }
+      },
+      "categories": [
+        "contacts-leads",
+        "sales"
+      ],
+      "publisher": "ZoomInfo",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

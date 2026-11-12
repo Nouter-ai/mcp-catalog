@@ -29,7 +29,14 @@
             "secret": true
           }
         ]
-      }
+      },
+      "categories": [
+        "engineering",
+        "tickets-tasks"
+      ],
+      "publisher": "GitHub",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

@@ -4,7 +4,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { buildCatalog, logoUri, readEntries } from "./build.ts";
-import { toServerJson } from "./server-json.ts";
+import type { DirectoryMeta } from "./directory.ts";
+import { toServerJson as sinDatos } from "./server-json.ts";
+
+// Los datos de la vidriera: ahora la entrada los exige.
+const DIR: DirectoryMeta = { categories: ["engineering"], publisher: "Ej", verified: true, signIn: "account" };
+const toServerJson = (e: Parameters<typeof sinDatos>[0]) => sinDatos(e, "1.0.0", DIR);
 
 const root = new URL("..", import.meta.url).pathname;
 

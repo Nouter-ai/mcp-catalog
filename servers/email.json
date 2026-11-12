@@ -11,7 +11,13 @@
       "gatekeeper": {
         "package": "gatekeeper-email",
         "offered": false
-      }
+      },
+      "categories": [
+        "email-messages"
+      ],
+      "publisher": "Nouter",
+      "verified": true,
+      "signIn": "none"
     }
   }
 }

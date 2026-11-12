@@ -24,7 +24,14 @@
           }
         ],
         "flag": "directory-nativos"
-      }
+      },
+      "categories": [
+        "engineering",
+        "tickets-tasks"
+      ],
+      "publisher": "GitLab",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

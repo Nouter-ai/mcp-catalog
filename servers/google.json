@@ -29,7 +29,14 @@
             "secret": true
           }
         ]
-      }
+      },
+      "categories": [
+        "email-messages",
+        "files-documents"
+      ],
+      "publisher": "Google",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

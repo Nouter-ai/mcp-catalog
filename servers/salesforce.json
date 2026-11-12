@@ -30,7 +30,14 @@
             "optional": true
           }
         ]
-      }
+      },
+      "categories": [
+        "sales",
+        "contacts-leads"
+      ],
+      "publisher": "Salesforce",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

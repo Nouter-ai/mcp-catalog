@@ -61,3 +61,15 @@ test("version: si cambia la URL o la autenticación, la versión tiene que subir
   assert.match(sube((s) => { s._meta[NS].trustedLogin = ["https://login.notion.com"]; }).join(), /version/);
   assert.match(sube((s) => { s._meta[NS].settings = [{ field: "clientId", variable: "MCP_FIXED_CLIENT_ID" }]; }).join(), /version/);
 });
+
+test("los datos de la vidriera: uno por campo, y una clave desconocida en _meta", () => {
+  const m = (s: any) => s._meta[NS];
+  falla(con((s) => { delete m(s).signIn; }), /signIn/);
+  falla(con((s) => { delete m(s).categories; }), /categories/);
+  falla(con((s) => { m(s).categories = ["engineering", "sales", "legal", "finance"]; }), /categories/);
+  falla(con((s) => { m(s).categories = ["otra"]; }), /categories/);
+  falla(con((s) => { m(s).publisher = ""; }), /publisher/);
+  falla(con((s) => { m(s).verified = 1; }), /verified/);
+  falla(con((s) => { m(s).signIn = "otro"; }), /signIn/);
+  falla(con((s) => { m(s).extra = 1; }), /desconocida/);
+});

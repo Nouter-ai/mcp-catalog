@@ -19,7 +19,14 @@
         "es": "Jira y Confluence"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "categories": [
+        "engineering",
+        "tickets-tasks"
+      ],
+      "publisher": "Atlassian",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

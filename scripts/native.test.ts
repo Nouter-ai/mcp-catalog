@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { checkServerJson } from "./server-check.ts";
-import { isNative, toNative, toNativeServerJson, type NativeEntry } from "./native.ts";
+import type { DirectoryMeta } from "./directory.ts";
+import { isNative, toNative, toNativeServerJson as nativoSin, type NativeEntry } from "./native.ts";
+
+// Los datos de la vidriera: ahora la entrada los exige, y los tests parten de una válida.
+const DIR: DirectoryMeta = { categories: ["engineering"], publisher: "Nouter", verified: true, signIn: "account" };
+const toNativeServerJson = (n: NativeEntry, version = "1.0.0", directory: DirectoryMeta = DIR) => nativoSin(n, version, directory);
 
 const slack: NativeEntry = {
   id: "slack", pkg: "gatekeeper-slack", name: "Slack", tagline: "Channels, messages and search", color: "#FFFFFF",
@@ -74,7 +79,7 @@ test("offered solo puede ser false, y el flag y las variables de zona tienen for
 test("una entrada MCP puede declarar que su servicio ya tiene gatekeeper nativo, sin ofrecerlo todavía", async () => {
   const { toServerJson } = await import("./server-json.ts");
   const s = toServerJson({ id: "notion", registry: "com.notion/mcp", url: "https://mcp.notion.com/mcp", name: "Notion", color: "#FFFFFF",
-    tagline: "t", description: "d", settings: [], trustedLogin: [] }) as any;
+    tagline: "t", description: "d", settings: [], trustedLogin: [] }, "1.0.0", DIR) as any;
   s._meta["ai.nouter.directory"].nativeGatekeeper = "gatekeeper-notion";
   assert.deepEqual(checkServerJson(s), []);
   s._meta["ai.nouter.directory"].nativeGatekeeper = "notion";
@@ -98,4 +103,16 @@ test("endurecimiento: una variable no pisa las del OS (BASE_URL, OAUTH_*, MCP_FI
 
 test("endurecimiento: dos ajustes no llenan la misma variable", () => {
   falla(con(slack, (s) => { s._meta["ai.nouter.directory"].gatekeeper.settings[1].variable = "CLIENT_ID"; }), /variable.*repetida|repetida/);
+});
+
+test("los datos de la vidriera: uno por campo, y una clave desconocida en _meta", () => {
+  const m = (s: any) => s._meta["ai.nouter.directory"];
+  falla(con(slack, (s) => { delete m(s).signIn; }), /signIn/);
+  falla(con(slack, (s) => { delete m(s).categories; }), /categories/);
+  falla(con(slack, (s) => { m(s).categories = ["engineering", "sales", "legal", "finance"]; }), /categories/);
+  falla(con(slack, (s) => { m(s).categories = ["otra"]; }), /categories/);
+  falla(con(slack, (s) => { m(s).publisher = ""; }), /publisher/);
+  falla(con(slack, (s) => { m(s).verified = 1; }), /verified/);
+  falla(con(slack, (s) => { m(s).signIn = "otro"; }), /signIn/);
+  falla(con(slack, (s) => { m(s).extra = 1; }), /desconocida/);
 });

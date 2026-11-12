@@ -19,7 +19,14 @@
         "es": "Twenty"
       },
       "settings": [],
-      "trustedLogin": []
+      "trustedLogin": [],
+      "categories": [
+        "sales",
+        "contacts-leads"
+      ],
+      "publisher": "Twenty",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

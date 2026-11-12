@@ -22,7 +22,14 @@
             "into": "secrets"
           }
         ]
-      }
+      },
+      "categories": [
+        "finance",
+        "databases"
+      ],
+      "publisher": "Oracle NetSuite",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

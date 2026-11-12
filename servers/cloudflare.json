@@ -20,7 +20,14 @@
       },
       "settings": [],
       "trustedLogin": [],
-      "nativeGatekeeper": "gatekeeper-cloudflare"
+      "nativeGatekeeper": "gatekeeper-cloudflare",
+      "categories": [
+        "engineering",
+        "websites"
+      ],
+      "publisher": "Cloudflare",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

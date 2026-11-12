@@ -24,7 +24,14 @@
           }
         ],
         "flag": "directory-nativos"
-      }
+      },
+      "categories": [
+        "marketing",
+        "design-media"
+      ],
+      "publisher": "X",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

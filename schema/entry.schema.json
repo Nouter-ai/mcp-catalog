@@ -54,7 +54,11 @@
             "description",
             "color",
             "settings",
-            "trustedLogin"
+            "trustedLogin",
+            "categories",
+            "publisher",
+            "verified",
+            "signIn"
           ],
           "properties": {
             "id": {
@@ -181,6 +185,50 @@
                 "type": "string",
                 "pattern": "^https://"
               }
+            },
+            "categories": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "automation-workflows",
+                  "contacts-leads",
+                  "databases",
+                  "design-media",
+                  "email-messages",
+                  "engineering",
+                  "events-tickets",
+                  "files-documents",
+                  "finance",
+                  "legal",
+                  "logs-errors",
+                  "marketing",
+                  "notes-memory",
+                  "reference-docs",
+                  "retail-ecommerce",
+                  "sales",
+                  "tickets-tasks",
+                  "websites"
+                ]
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "verified": {
+              "type": "boolean"
+            },
+            "signIn": {
+              "enum": [
+                "account",
+                "company",
+                "none"
+              ]
             }
           }
         }

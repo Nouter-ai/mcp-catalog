@@ -20,7 +20,14 @@
       },
       "settings": [],
       "trustedLogin": [],
-      "nativeGatekeeper": "gatekeeper-linear"
+      "nativeGatekeeper": "gatekeeper-linear",
+      "categories": [
+        "engineering",
+        "tickets-tasks"
+      ],
+      "publisher": "Linear",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

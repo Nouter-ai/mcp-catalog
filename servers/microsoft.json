@@ -29,7 +29,14 @@
           }
         ],
         "offered": false
-      }
+      },
+      "categories": [
+        "email-messages",
+        "files-documents"
+      ],
+      "publisher": "Microsoft",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

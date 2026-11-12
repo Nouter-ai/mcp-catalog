@@ -13,7 +13,14 @@
         "package": "gatekeeper-nouter-sor",
         "relay": true,
         "flag": "conector-nouter-sor"
-      }
+      },
+      "categories": [
+        "databases",
+        "reference-docs"
+      ],
+      "publisher": "Nouter",
+      "verified": true,
+      "signIn": "account"
     }
   }
 }

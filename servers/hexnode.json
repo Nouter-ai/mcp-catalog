@@ -11,7 +11,14 @@
       "gatekeeper": {
         "package": "gatekeeper-hexnode",
         "flag": "conector-hexnode"
-      }
+      },
+      "categories": [
+        "engineering",
+        "tickets-tasks"
+      ],
+      "publisher": "Hexnode",
+      "verified": true,
+      "signIn": "company"
     }
   }
 }
