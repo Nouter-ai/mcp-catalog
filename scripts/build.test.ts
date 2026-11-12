@@ -45,6 +45,15 @@ test("el build falla si una entrada no vale, si falta un logo o si el orden no n
   await assert.rejects(buildCatalog(dir, "v1"), /dos\.json/);
 });
 
+test("el build falla si dos entradas tienen el mismo name del estándar", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "catalogo-"));
+  await mkdir(join(dir, "servers"));
+  const e = { id: "uno", registry: "com.ej/uno", url: "https://a.example.com/mcp", name: "Uno", color: "#FFFFFF", tagline: "t", description: "d", settings: [], trustedLogin: [] };
+  await writeFile(join(dir, "servers/uno.json"), JSON.stringify(toServerJson(e)));
+  await writeFile(join(dir, "servers/dos.json"), JSON.stringify(toServerJson({ ...e, id: "dos" })));
+  await assert.rejects(readEntries(dir), /repetido|mismo name/);
+});
+
 test("la versión es vN o dev", async () => {
   await assert.rejects(buildCatalog(root, "1.0"), /versión/);
   assert.equal((await buildCatalog(root, "dev")).version, "dev");

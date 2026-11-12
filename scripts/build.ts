@@ -4,7 +4,8 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkEntry, type Entry } from "./entry.ts";
+import type { Entry } from "./entry.ts";
+import { checkServerJson } from "./server-check.ts";
 import { toEntry, type ServerJson } from "./server-json.ts";
 
 export interface Catalog { version: string; servers: (Entry & { logo: string })[] }
@@ -15,10 +16,15 @@ export const logoUri = (svg: string) => `data:image/svg+xml,${encodeURIComponent
 export async function readEntries(dir: string): Promise<Entry[]> {
   const files = (await readdir(join(dir, "servers"))).filter((f) => f.endsWith(".json") && f !== "order.json").toSorted();
   const entries: Entry[] = [];
+  const names = new Map<string, string>();
   for (const f of files) {
-    const e = toEntry(JSON.parse(await readFile(join(dir, "servers", f), "utf8")) as ServerJson);
-    const errors = checkEntry(e);
+    const raw: unknown = JSON.parse(await readFile(join(dir, "servers", f), "utf8"));
+    const errors = checkServerJson(raw);
     if (errors.length) throw new Error(`${f}: ${errors.join("; ")}`);
+    const name = (raw as ServerJson).name;
+    if (names.has(name)) throw new Error(`${f}: el name ${name} está repetido (también en ${names.get(name)})`);
+    names.set(name, f);
+    const e = toEntry(raw as ServerJson);
     if (`${e.id}.json` !== f) throw new Error(`${f}: el id (${e.id}) tiene que ser el nombre del archivo`);
     entries.push(e);
   }
