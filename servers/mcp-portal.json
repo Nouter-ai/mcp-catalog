@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "mcp-portal",
       "color": "#FFFFFF",
-      "landing": "MCP Server Portal de tu empresa",
       "gatekeeper": {
         "package": "gatekeeper-mcp-portal",
         "settings": [

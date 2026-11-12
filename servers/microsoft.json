@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "microsoft",
       "color": "#FFFFFF",
-      "landing": "Microsoft 365, con la app de tu empresa",
       "gatekeeper": {
         "package": "gatekeeper-microsoft",
         "settings": [

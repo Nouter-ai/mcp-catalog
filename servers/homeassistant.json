@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "homeassistant",
       "color": "#FFFFFF",
-      "landing": "Home Assistant",
       "gatekeeper": {
         "package": "gatekeeper-homeassistant"
       }
