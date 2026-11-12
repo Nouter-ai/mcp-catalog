@@ -1,16 +1,18 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { SCHEMA_URL } from "./server-json.ts";
 
 const load = async (p: string) => readFile(new URL(`../schema/vendor/${p}`, import.meta.url), "utf8");
 
-test("el esquema del estándar está fijado, con el commit del que salió", async () => {
+test("el esquema del estándar está fijado: la versión publicada, con su URL", async () => {
   const schema = JSON.parse(await load("server.schema.json"));
   const sd = (schema.$defs ?? schema.definitions).ServerDetail;
   assert.deepEqual(sd.required.toSorted(), ["description", "name", "version"]);
   assert.equal(sd.properties.description.maxLength, 100);
   assert.equal(sd.properties.name.pattern, "^[a-zA-Z0-9.-]+/[a-zA-Z0-9._-]+$");
-  assert.match(await load("README.md"), /\b[0-9a-f]{40}\b/);
+  assert.match(await load("README.md"), /schemas\/2025-12-11\/server\.schema\.json/);
+  assert.equal(schema.$id, SCHEMA_URL);
 });
 
 test("cada servers/<id>.json es un server.json del estándar, con lo de Nouter solo bajo su namespace", async () => {

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/15739da3285de712addeebbed093bf3e79893d35/docs/reference/server-json/draft/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.notion/mcp",
   "title": "Notion",
   "description": "Pages, databases and comments",
