@@ -7,10 +7,12 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readEntries } from "./build.ts";
 import type { Entry } from "./entry.ts";
+import { SCHEMA_URL } from "./server-json.ts";
 
-export type Finding = { id: string; kind: "url-distinta" | "retirado" | "no-existe"; detail: string };
+export type Finding = { id: string; kind: "url-distinta" | "retirado" | "no-existe" | "esquema-nuevo"; detail: string };
 
-const REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers";
+const REGISTRY = "https://registry.modelcontextprotocol.io/v0.1/servers";
+const CHANGELOG = "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/docs/reference/server-json/CHANGELOG.md";
 
 // El registro contesta entre décimas de segundo y casi dos minutos (medido el 2026-10-09, también fuera de GitHub):
 // cada consulta tiene 60 s y hasta 3 intentos. Si los tres fallan, el job falla.
@@ -49,7 +51,19 @@ export async function checkEntries(entries: Entry[], fetchImpl: typeof fetch = f
   return out;
 }
 
-const TITULO: Record<Finding["kind"], string> = { "url-distinta": "URL distinta", retirado: "Retirado", "no-existe": "No está en el registro" };
+// El esquema de server.json: avisa si el estándar publicó una versión con fecha más nueva que la fijada (schema/vendor).
+// No cambia nada solo: actualizarlo es un PR (schema/vendor/README.md).
+export async function checkSchema(fetchImpl: typeof fetch = fetch): Promise<Finding[]> {
+  const res = await fetchImpl(CHANGELOG, { signal: AbortSignal.timeout(60_000) });
+  if (!res.ok) throw new Error(`el changelog del esquema respondió ${res.status}`);
+  const fijada = /schemas\/([0-9-]+)\//.exec(SCHEMA_URL)![1];
+  const fechas = [...(await res.text()).matchAll(/^## (\d{4}-\d{2}-\d{2})\s*$/gm)].map((m) => m[1]).toSorted();
+  const ultima = fechas.at(-1);
+  return ultima && ultima > fijada
+    ? [{ id: "esquema", kind: "esquema-nuevo", detail: `el estándar publicó el esquema ${ultima}; usamos ${fijada}` }] : [];
+}
+
+const TITULO: Record<Finding["kind"], string> = { "esquema-nuevo": "Esquema nuevo", "url-distinta": "URL distinta", retirado: "Retirado", "no-existe": "No está en el registro" };
 
 export function report(findings: Finding[], fecha: string): string | null {
   if (!findings.length) return null;
@@ -63,7 +77,7 @@ export function report(findings: Finding[], fecha: string): string | null {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = resolve(fileURLToPath(import.meta.url), "../..");
-  const md = report(await checkEntries(await readEntries(root)), new Date().toISOString().slice(0, 10));
+  const md = report([...await checkEntries(await readEntries(root)), ...await checkSchema()], new Date().toISOString().slice(0, 10));
   if (md) {
     await mkdir(join(root, "informes"), { recursive: true });
     await writeFile(join(root, "informes", "registro.md"), md);

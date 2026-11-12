@@ -1,11 +1,26 @@
 {
-  "id": "cloudflare",
-  "url": "https://mcp.cloudflare.com/mcp",
-  "name": "Cloudflare",
-  "landing": { "es": "Cloudflare" },
-  "color": "#FFFFFF",
-  "tagline": "Your Cloudflare account",
-  "description": "Cloudflare's official MCP server. Its execute tool runs code against the API, so review each approval carefully.",
-  "settings": [],
-  "trustedLogin": []
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/cloudflare",
+  "title": "Cloudflare",
+  "description": "Your Cloudflare account",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.cloudflare.com/mcp"
+    }
+  ],
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "cloudflare",
+      "description": "Cloudflare's official MCP server. Its execute tool runs code against the API, so review each approval carefully.",
+      "color": "#FFFFFF",
+      "landing": {
+        "es": "Cloudflare"
+      },
+      "settings": [],
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-cloudflare"
+    }
+  }
 }

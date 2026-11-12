@@ -1,12 +1,26 @@
 {
-  "id": "linear",
-  "registry": "app.linear/linear",
-  "url": "https://mcp.linear.app/mcp",
-  "name": "Linear",
-  "landing": { "es": "Linear" },
-  "color": "#FFFFFF",
-  "tagline": "Issues, projects and comments",
-  "description": "Linear's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
-  "settings": [],
-  "trustedLogin": []
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "app.linear/linear",
+  "title": "Linear",
+  "description": "Issues, projects and comments",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.linear.app/mcp"
+    }
+  ],
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "linear",
+      "description": "Linear's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
+      "color": "#FFFFFF",
+      "landing": {
+        "es": "Linear"
+      },
+      "settings": [],
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-linear"
+    }
+  }
 }

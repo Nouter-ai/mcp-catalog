@@ -1,0 +1,28 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/netsuite",
+  "title": "NetSuite",
+  "description": "Records, saved searches and SuiteQL",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "netsuite",
+      "color": "#FFFFFF",
+      "landing": "NetSuite, con la app de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-netsuite",
+        "settings": [
+          {
+            "field": "accountId",
+            "variable": "ACCOUNT_ID"
+          },
+          {
+            "field": "clientId",
+            "variable": "CLIENT_ID",
+            "into": "secrets"
+          }
+        ]
+      }
+    }
+  }
+}

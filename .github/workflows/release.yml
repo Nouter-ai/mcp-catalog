@@ -12,7 +12,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - run: npm test
-      - run: node scripts/build.ts "${GITHUB_REF_NAME}"
-      - run: gh release create "${GITHUB_REF_NAME}" dist/catalog.json --title "${GITHUB_REF_NAME}" --notes "Catálogo ${GITHUB_REF_NAME}"
+      # publishedAt del registro: la fecha del commit etiquetado, no el reloj del job (el armado es reproducible).
+      - run: node scripts/build.ts "${GITHUB_REF_NAME}" "$(git log -1 --format=%cI)"
+      # Los assets de un release son planos: el árbol del registro estático (v0.1/…) va en un tar.gz.
+      - run: tar -czf dist/registry.tar.gz -C dist registry
+      - run: gh release create "${GITHUB_REF_NAME}" dist/catalog.json dist/registry.tar.gz --title "${GITHUB_REF_NAME}" --notes "Catálogo ${GITHUB_REF_NAME}"
         env:
           GH_TOKEN: ${{ github.token }}

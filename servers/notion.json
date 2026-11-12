@@ -1,12 +1,26 @@
 {
-  "id": "notion",
-  "registry": "com.notion/mcp",
-  "url": "https://mcp.notion.com/mcp",
-  "name": "Notion",
-  "landing": { "es": "Notion" },
-  "color": "#FFFFFF",
-  "tagline": "Pages, databases and comments",
-  "description": "Notion's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
-  "settings": [],
-  "trustedLogin": []
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.notion/mcp",
+  "title": "Notion",
+  "description": "Pages, databases and comments",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.notion.com/mcp"
+    }
+  ],
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "notion",
+      "description": "Notion's official MCP server. Reads happen straight away; anything that writes waits for your approval.",
+      "color": "#FFFFFF",
+      "landing": {
+        "es": "Notion"
+      },
+      "settings": [],
+      "trustedLogin": [],
+      "nativeGatekeeper": "gatekeeper-notion"
+    }
+  }
 }

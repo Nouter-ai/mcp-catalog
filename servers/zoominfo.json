@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/zoominfo",
+  "title": "ZoomInfo",
+  "description": "Companies and contacts from ZoomInfo",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "zoominfo",
+      "color": "#FFFFFF",
+      "landing": "ZoomInfo, con la app de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-zoominfo",
+        "settings": [
+          {
+            "field": "clientId",
+            "variable": "CLIENT_ID",
+            "into": "secrets"
+          },
+          {
+            "field": "clientSecret",
+            "variable": "CLIENT_SECRET",
+            "into": "secrets",
+            "secret": true
+          }
+        ]
+      }
+    }
+  }
+}

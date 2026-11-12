@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/delivery",
+  "title": "Nouter Delivery",
+  "description": "Orders delivered to your Salesforce org",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "delivery",
+      "color": "#FFFFFF",
+      "gatekeeper": {
+        "package": "gatekeeper-delivery",
+        "flag": "salesforce-delivery"
+      }
+    }
+  }
+}

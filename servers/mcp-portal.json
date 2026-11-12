@@ -1,0 +1,40 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/mcp-portal",
+  "title": "MCP Server Portal",
+  "description": "Your company's Cloudflare MCP portal",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "mcp-portal",
+      "color": "#FFFFFF",
+      "landing": "MCP Server Portal de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-mcp-portal",
+        "settings": [
+          {
+            "field": "portalUrl",
+            "variable": "MCP_PORTAL_URL"
+          },
+          {
+            "field": "portalName",
+            "variable": "MCP_PORTAL_NAME",
+            "optional": true
+          },
+          {
+            "field": "portalAuth",
+            "variable": "MCP_PORTAL_AUTH",
+            "optional": true
+          },
+          {
+            "field": "portalToken",
+            "variable": "MCP_PORTAL_TOKEN",
+            "into": "secrets",
+            "secret": true,
+            "optional": true
+          }
+        ]
+      }
+    }
+  }
+}

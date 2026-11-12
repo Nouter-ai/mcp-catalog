@@ -1,146 +1,189 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Nouter-ai/mcp-catalog/schema/entry.schema.json",
-  "title": "Entrada del catálogo de MCP de nouter",
-  "description": "La validación que manda es scripts/entry.ts; este esquema es para el editor.",
+  "title": "Entrada del Directory de MCP de nouter (server.json del MCP Registry)",
+  "description": "Para el editor: el server.json del estándar (schema/vendor) más lo de Nouter en _meta, de un servidor MCP remoto. Las entradas de gatekeepers nativos (sin remotes) y la validación que manda están en scripts/server-check.ts y scripts/native.ts.",
+  "allOf": [
+    {
+      "$ref": "vendor/server.schema.json"
+    }
+  ],
   "type": "object",
-  "additionalProperties": false,
   "required": [
-    "id",
-    "url",
-    "name",
-    "color",
-    "tagline",
-    "description",
-    "settings",
-    "trustedLogin"
+    "$schema",
+    "title",
+    "remotes",
+    "_meta"
   ],
   "properties": {
-    "id": {
-      "type": "string",
-      "pattern": "^(?!mcp-)[a-z][a-z0-9-]{0,19}$",
-      "not": {
-        "enum": [
-          "context",
-          "scheduler",
-          "mcp",
-          "google",
-          "slack",
-          "github",
-          "salesforce",
-          "netsuite"
-        ]
-      }
-    },
-    "registry": {
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9.-]+/[a-zA-Z0-9._-]+$"
-    },
-    "url": {
-      "type": "string",
-      "pattern": "^https://",
-      "description": "https. Puede llevar un hueco {campo} como primera etiqueta del host, que llena un ajuste { field, fills: \"url\" }."
-    },
-    "name": {
-      "type": "string",
-      "minLength": 1,
+    "title": {
       "maxLength": 40
     },
-    "landing": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "es"
-      ],
-      "properties": {
-        "es": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 80
+    "description": {
+      "maxLength": 60
+    },
+    "remotes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "properties": {
+          "type": {
+            "const": "streamable-http"
+          },
+          "url": {
+            "pattern": "^https://"
+          }
         }
       }
     },
-    "color": {
-      "type": "string",
-      "pattern": "^#[0-9A-F]{6}$"
-    },
-    "tagline": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 60
-    },
-    "description": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 300
-    },
-    "settings": {
-      "type": "array",
-      "items": {
-        "oneOf": [
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "field",
-              "variable"
-            ],
-            "properties": {
-              "field": {
-                "type": "string",
-                "pattern": "^[a-zA-Z]{1,30}$"
-              },
-              "variable": {
-                "const": "MCP_FIXED_CLIENT_ID"
+    "_meta": {
+      "type": "object",
+      "required": [
+        "ai.nouter.directory"
+      ],
+      "propertyNames": {
+        "const": "ai.nouter.directory"
+      },
+      "properties": {
+        "ai.nouter.directory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "description",
+            "color",
+            "settings",
+            "trustedLogin"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^(?!mcp-)[a-z][a-z0-9-]{0,19}$",
+              "not": {
+                "enum": [
+                  "confluence",
+                  "context",
+                  "control",
+                  "delivery",
+                  "email",
+                  "emdash",
+                  "eset",
+                  "github",
+                  "gitlab",
+                  "google",
+                  "hexnode",
+                  "homeassistant",
+                  "mcp",
+                  "mcp-portal",
+                  "microsoft",
+                  "netsuite",
+                  "nouter-platform",
+                  "nouter-sor",
+                  "salesforce",
+                  "scheduler",
+                  "slack",
+                  "spotify",
+                  "websearch",
+                  "x",
+                  "zoominfo"
+                ]
               }
-            }
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "field",
-              "variable",
-              "secret"
-            ],
-            "properties": {
-              "field": {
-                "type": "string",
-                "pattern": "^[a-zA-Z]{1,30}$"
-              },
-              "variable": {
-                "const": "MCP_FIXED_CLIENT_SECRET"
-              },
-              "secret": {
-                "const": true
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "color": {
+              "type": "string",
+              "pattern": "^#[0-9A-F]{6}$"
+            },
+            "landing": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "es"
+              ],
+              "properties": {
+                "es": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
               }
-            }
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "field",
-              "fills"
-            ],
-            "properties": {
-              "field": {
+            },
+            "settings": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "variable"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z]{1,30}$"
+                      },
+                      "variable": {
+                        "const": "MCP_FIXED_CLIENT_ID"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "variable",
+                      "secret"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z]{1,30}$"
+                      },
+                      "variable": {
+                        "const": "MCP_FIXED_CLIENT_SECRET"
+                      },
+                      "secret": {
+                        "const": true
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "fills"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z]{1,30}$"
+                      },
+                      "fills": {
+                        "const": "url"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "trustedLogin": {
+              "type": "array",
+              "items": {
                 "type": "string",
-                "pattern": "^[a-zA-Z]{1,30}$"
-              },
-              "fills": {
-                "const": "url"
+                "pattern": "^https://"
               }
             }
           }
-        ]
-      }
-    },
-    "trustedLogin": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^https://"
+        }
       }
     }
   }

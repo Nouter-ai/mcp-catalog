@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/homeassistant",
+  "title": "Home Assistant",
+  "description": "Your home's devices and automations",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "homeassistant",
+      "color": "#FFFFFF",
+      "landing": "Home Assistant",
+      "gatekeeper": {
+        "package": "gatekeeper-homeassistant"
+      }
+    }
+  }
+}

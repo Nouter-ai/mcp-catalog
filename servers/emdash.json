@@ -1,0 +1,38 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/emdash",
+  "title": "EmDash",
+  "description": "Pages, posts and media of an EmDash site",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "emdash",
+      "color": "#FFFFFF",
+      "landing": "EmDash, el CMS de Cloudflare",
+      "gatekeeper": {
+        "package": "gatekeeper-emdash",
+        "settings": [
+          {
+            "field": "accessHost",
+            "variable": "ACCESS_HOST",
+            "optional": true
+          },
+          {
+            "field": "accessClientId",
+            "variable": "ACCESS_CLIENT_ID",
+            "into": "secrets",
+            "secret": true,
+            "optional": true
+          },
+          {
+            "field": "accessClientSecret",
+            "variable": "ACCESS_CLIENT_SECRET",
+            "into": "secrets",
+            "secret": true,
+            "optional": true
+          }
+        ]
+      }
+    }
+  }
+}

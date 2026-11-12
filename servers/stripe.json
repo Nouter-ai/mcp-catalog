@@ -1,12 +1,25 @@
 {
-  "id": "stripe",
-  "registry": "com.stripe/mcp",
-  "url": "https://mcp.stripe.com",
-  "name": "Stripe",
-  "landing": { "es": "Stripe" },
-  "color": "#FFFFFF",
-  "tagline": "Customers, payments and invoices",
-  "description": "Stripe's official MCP server. Writes wait for your approval, and Stripe asks its own confirmation for refunds and payouts.",
-  "settings": [],
-  "trustedLogin": []
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.stripe/mcp",
+  "title": "Stripe",
+  "description": "Customers, payments and invoices",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.stripe.com"
+    }
+  ],
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "stripe",
+      "description": "Stripe's official MCP server. Writes wait for your approval, and Stripe asks its own confirmation for refunds and payouts.",
+      "color": "#FFFFFF",
+      "landing": {
+        "es": "Stripe"
+      },
+      "settings": [],
+      "trustedLogin": []
+    }
+  }
 }

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/microsoft",
+  "title": "Microsoft 365",
+  "description": "SharePoint, OneDrive, Outlook and Calendar",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "microsoft",
+      "color": "#FFFFFF",
+      "landing": "Microsoft 365, con la app de tu empresa",
+      "gatekeeper": {
+        "package": "gatekeeper-microsoft",
+        "settings": [
+          {
+            "field": "clientId",
+            "variable": "CLIENT_ID",
+            "into": "secrets"
+          },
+          {
+            "field": "clientSecret",
+            "variable": "CLIENT_SECRET",
+            "into": "secrets",
+            "secret": true
+          },
+          {
+            "field": "tenantId",
+            "variable": "MICROSOFT_TENANT_ID",
+            "into": "secrets"
+          }
+        ]
+      }
+    }
+  }
+}

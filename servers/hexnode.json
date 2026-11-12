@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/hexnode",
+  "title": "Hexnode UEM",
+  "description": "Your devices, users and policies in Hexnode UEM",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "hexnode",
+      "color": "#FFFFFF",
+      "gatekeeper": {
+        "package": "gatekeeper-hexnode",
+        "flag": "conector-hexnode"
+      }
+    }
+  }
+}

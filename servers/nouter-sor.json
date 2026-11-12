@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.nouter/nouter-sor",
+  "title": "Nouter SOR",
+  "description": "Your company's system of record: its model and data",
+  "version": "1.0.0",
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "nouter-sor",
+      "color": "#FFFFFF",
+      "landing": "Nouter SOR",
+      "gatekeeper": {
+        "package": "gatekeeper-nouter-sor",
+        "relay": true,
+        "flag": "conector-nouter-sor"
+      }
+    }
+  }
+}

@@ -11,8 +11,11 @@ export interface Entry {
 export type Setting = { field: string; variable: "MCP_FIXED_CLIENT_ID" }
   | { field: string; variable: "MCP_FIXED_CLIENT_SECRET"; secret: true } | { field: string; fills: "url" };
 
-// Los gatekeepers que siguen en el código de yunta-control. "mcp-" es el prefijo de los MCP propios de cada empresa.
-export const RESERVED = ["context", "scheduler", "mcp", "google", "slack", "github", "salesforce", "netsuite"] as const;
+// Los ids de los gatekeepers del OS (los nativos del Directory, los ambientales y los que todavía no entran): un MCP no puede
+// tomarlos, y deben coincidir con RESERVED_IDS de yunta-control. "mcp-" es el prefijo de los MCP propios de cada empresa.
+export const RESERVED = ["context", "scheduler", "mcp", "mcp-portal", "websearch", "confluence", "google", "slack", "github", "gitlab",
+  "microsoft", "salesforce", "netsuite", "zoominfo", "emdash", "nouter-platform", "nouter-sor", "spotify", "x", "homeassistant", "email",
+  "eset", "hexnode", "control", "delivery"] as const;
 
 const KEYS = new Set(["id", "registry", "url", "name", "landing", "color", "tagline", "description", "settings", "trustedLogin"]);
 const BLOCKED = [/^localhost$/i, /\.localhost$/i, /^127\./, /^0\./, /^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[01])\./,
