@@ -64,7 +64,8 @@ export function gitAddedAt(root: string): (path: string) => string {
   return (path) => {
     const out = execFileSync("git", ["log", "--diff-filter=A", "--format=%cI", "--", path], { cwd: root, encoding: "utf8" }).trim().split("\n").filter(Boolean);
     if (!out.length) throw new Error(`${path}: no tiene un commit que lo agregue (added sale del historial de git)`);
-    return out[out.length - 1];
+    // Normalizado a UTC con milisegundos: %cI da «+00:00» o «Z» según la versión de git.
+    return new Date(out[out.length - 1]).toISOString();
   };
 }
 
@@ -105,7 +106,7 @@ export async function buildDirectory(dir: string, version: string, addedOf: (pat
       id: m.id, type: "connector", name: raw.title, tagline: raw.description,
       // Un nativo no tiene descripción larga: su descripción es el tagline.
       description: native ? raw.description : (m as ServerJson["_meta"][string]).description,
-      publisher: m.publisher!, verified: m.verified!, categories: m.categories!, added: baseline[m.id] ?? addedOf(`servers/${f}`),
+      publisher: m.publisher!, verified: m.verified!, categories: m.categories!, added: baseline[m.id] ? new Date(baseline[m.id]).toISOString() : addedOf(`servers/${f}`),
       logo: await readLogo(dir, m.id), ...(g?.flag ? { flag: g.flag } : {}), ...(g?.offered === false ? { offered: false } : {}),
       connector: { kind: native ? "native" : "mcp", signIn: m.signIn! },
     });

@@ -83,7 +83,7 @@ test("el índice: las 26, con tipo, categorías, added y logo; el nativo sin des
   assert.equal(notion.tagline, "Pages, databases and comments");
   assert.ok(notion.logo!.startsWith("data:image/svg+xml,"));
   assert.deepEqual(notion.connector, { kind: "mcp", signIn: "account" });
-  assert.equal(notion.added, "2026-10-03T20:05:35-03:00", "la del baseline, no la del historial");
+  assert.equal(notion.added, "2026-10-03T23:05:35.000Z", "la del baseline, no la del historial");
   const email = idx.entries.find((e) => e.id === "email")!;
   assert.deepEqual(email.connector, { kind: "native", signIn: "none" });
   assert.equal(email.offered, false);
@@ -115,7 +115,7 @@ test("added sale del primer commit que agregó la entrada", async () => {
   execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", "commit", "-qam", "cambio"], { cwd: dir, stdio: "ignore",
     env: { ...env, GIT_AUTHOR_DATE: "2026-03-01T00:00:00Z", GIT_COMMITTER_DATE: "2026-03-01T00:00:00Z" } });
   const idx = await buildDirectory(dir, "v1", gitAddedAt(dir));
-  assert.equal(idx.entries[0].added, "2026-01-01T00:00:00+00:00");
+  assert.equal(idx.entries[0].added, "2026-01-01T00:00:00.000Z");
 });
 
 test("el release publica directory.json y corre con el historial completo", async () => {
@@ -153,19 +153,19 @@ test("added-baseline.json: la fecha en que llegó a Nouter cada uno de los 26 de
   assert.deepEqual(Object.keys(b).toSorted(), [...HOY].toSorted());
   assert.deepEqual([...BASELINE_IDS].toSorted(), [...HOY].toSorted());
   for (const [id, d] of Object.entries(b)) assert.match(d as string, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$/, id);
-  assert.equal(b.notion, "2026-10-03T20:05:35-03:00");
+  assert.equal(b.notion, "2026-10-03T23:05:35.000Z");
   assert.equal(b.slack, "2026-10-05T13:50:25-03:00");
   assert.equal(b["nouter-sor"], "2026-11-03T00:54:38+00:00", "llegó como nouter-platform");
 });
 
 test("added: la fecha del baseline si el id está, y si no la del historial", async () => {
   const idx = await buildDirectory(root, "v1", () => "2030-01-01T00:00:00Z");
-  assert.equal(idx.entries.find((e) => e.id === "notion")!.added, "2026-10-03T20:05:35-03:00");
+  assert.equal(idx.entries.find((e) => e.id === "notion")!.added, "2026-10-03T23:05:35.000Z");
   assert.ok(idx.entries.every((e) => e.added !== "2030-01-01T00:00:00Z"), "los 26 de hoy salen todos del baseline");
 });
 
 test("el baseline no puede crecer ni nombrar lo que no existe", async () => {
-  const ok = "2026-10-03T20:05:35-03:00";
+  const ok = "2026-10-03T23:05:35.000Z";
   assert.deepEqual(baselineErrors({ notion: ok }, new Set(["notion"])), []);
   assert.match(baselineErrors({ nuevo: ok }, new Set(["nuevo"])).join(), /cerrada/);
   assert.match(baselineErrors({ notion: ok }, new Set(["linear"])).join(), /no existe/);
