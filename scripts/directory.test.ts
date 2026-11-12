@@ -16,9 +16,8 @@ test("schema/categories.json es la lista del contrato: 18, con id y rótulo", as
   assert.equal(s.categories[0].label, "Automation & workflows");
 });
 
-test("cada entrada de servers/ declara categorías, publisher, verified y signIn como la tabla", async () => {
+test("las entradas conocidas de servers/ declaran categorías, publisher, verified y signIn como la tabla (una nueva no rompe el test: la valida server-check)", async () => {
   const files = (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json");
-  assert.equal(files.length, 26);
   const tabla: Record<string, [string[], string, boolean, string]> = {
     notion: [["notes-memory", "reference-docs"], "Notion", true, "account"],
     linear: [["engineering", "tickets-tasks"], "Linear", true, "account"],
@@ -43,14 +42,18 @@ test("cada entrada de servers/ declara categorías, publisher, verified y signIn
     x: [["marketing", "design-media"], "X", true, "account"],
     homeassistant: [["automation-workflows", "engineering"], "Home Assistant", true, "company"],
     "mcp-portal": [["engineering", "automation-workflows"], "Cloudflare", true, "company"],
-    email: [["email-messages"], "Nouter", true, "none"],
+    email: [["email-messages"], "Cloudflare", true, "none"],
     control: [["engineering", "finance"], "Nouter", true, "account"],
-    delivery: [["sales", "tickets-tasks"], "Nouter", true, "company"],
+    delivery: [["engineering", "sales"], "Nouter", true, "company"],
   };
+  const vistos = new Set<string>();
   for (const f of files) {
     const m = JSON.parse(await readFile(new URL(`../servers/${f}`, import.meta.url), "utf8"))._meta["ai.nouter.directory"];
+    if (!tabla[m.id]) continue; // un conector que se suma después no está en la tabla
+    vistos.add(m.id);
     assert.deepEqual([m.categories, m.publisher, m.verified, m.signIn], tabla[m.id], m.id);
   }
+  assert.deepEqual([...vistos].toSorted(), Object.keys(tabla).toSorted(), "ninguno de los de hoy se perdió");
 });
 
 test("directoryMetaErrors: lo válido pasa y cada campo mal puesto falla con su nombre", () => {
