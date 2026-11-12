@@ -92,10 +92,10 @@ test("el índice: las 26, con tipo, categorías, added y logo; el nativo sin des
 });
 
 test("un destacado que nombra un id que no existe, repite una colección o deja un título vacío falla", () => {
-  assert.match(checkFeatured({ collections: [{ id: "a", title: "A", subtitle: "s", items: ["nada"] }] }, new Set(["notion"])).join(), /items/);
-  assert.match(checkFeatured({ collections: [{ id: "a", title: "", subtitle: "s", items: ["notion"] }] }, new Set(["notion"])).join(), /title/);
+  assert.match(checkFeatured({ collections: [{ id: "a", title: "A", subtitle: "s", items: ["nada"] }] }, new Map([["notion", {}]])).join(), /items/);
+  assert.match(checkFeatured({ collections: [{ id: "a", title: "", subtitle: "s", items: ["notion"] }] }, new Map([["notion", {}]])).join(), /title/);
   const dos = [{ id: "a", title: "A", subtitle: "s", items: ["notion"] }];
-  assert.match(checkFeatured({ collections: [...dos, ...dos] }, new Set(["notion"])).join(), /repetid/);
+  assert.match(checkFeatured({ collections: [...dos, ...dos] }, new Map([["notion", {}]])).join(), /repetid/);
 });
 
 test("added sale del primer commit que agregó la entrada", async () => {
@@ -131,4 +131,16 @@ test("sin importaciones circulares: lo que directory.ts importa no lo importa a 
   assert.doesNotMatch(leaf, /from "\.\//, "directory-meta.ts no importa nada de este repo");
   assert.match(leaf, /export function directoryMetaErrors/);
   assert.match(leaf, /export const CATEGORIES/);
+});
+
+test("un destacado no puede nombrar una entrada con flag ni con offered: false: el tenant que no la tiene vería la colección rota", async () => {
+  const entradas = new Map<string, { flag?: string; offered?: boolean }>([["notion", {}], ["gitlab", { flag: "directory-nativos" }], ["email", { offered: false }]]);
+  const col = (...items: string[]) => ({ collections: [{ id: "a", title: "A", subtitle: "s", items }] });
+  assert.deepEqual(checkFeatured(col("notion"), entradas), []);
+  assert.match(checkFeatured(col("notion", "gitlab"), entradas).join(), /flag/);
+  assert.match(checkFeatured(col("email"), entradas).join(), /offered/);
+  // Y el featured.json real no nombra ninguna.
+  const idx = await buildDirectory(root, "v1", () => "2026-01-01T00:00:00Z");
+  const porId = new Map(idx.entries.map((e) => [e.id, e]));
+  for (const c of idx.featured) for (const id of c.items) assert.ok(!porId.get(id)!.flag && porId.get(id)!.offered !== false, `${c.id}: ${id}`);
 });

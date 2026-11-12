@@ -27,7 +27,7 @@ export interface DirectoryReleaseIndex {
 }
 
 // featured.json: las colecciones del carrusel «Curated by Nouter». Cada id de item tiene que ser una entrada del catálogo.
-export function checkFeatured(raw: unknown, ids: ReadonlySet<string>): string[] {
+export function checkFeatured(raw: unknown, entries: ReadonlyMap<string, { flag?: string; offered?: boolean }>): string[] {
   const errors: string[] = [];
   if (!(typeof raw === "object" && raw !== null && !Array.isArray(raw)) || !Array.isArray((raw as { collections?: unknown }).collections)) {
     return ["featured.json: { collections: [...] }"];
@@ -48,7 +48,12 @@ export function checkFeatured(raw: unknown, ids: ReadonlySet<string>): string[] 
     if (!Array.isArray(o.items) || o.items.length < 1) errors.push(`${at}.items: al menos un id`);
     else {
       if (new Set(o.items).size !== o.items.length) errors.push(`${at}.items: ids repetidos`);
-      for (const it of o.items) if (typeof it !== "string" || !ids.has(it)) errors.push(`${at}.items: ${String(it)} no es una entrada del catálogo`);
+      for (const it of o.items) {
+        const e = typeof it === "string" ? entries.get(it) : undefined;
+        if (!e) errors.push(`${at}.items: ${String(it)} no es una entrada del catálogo`);
+        else if (e.flag) errors.push(`${at}.items: ${String(it)} está detrás del flag ${e.flag}: el tenant que no lo tiene vería la colección rota`);
+        else if (e.offered === false) errors.push(`${at}.items: ${String(it)} es offered: false (no se ofrece)`);
+      }
     }
   }
   return errors;
@@ -87,7 +92,7 @@ export async function buildDirectory(dir: string, version: string, addedOf: (pat
     throw new Error(`servers/order.json tiene que nombrar una vez a cada entrada: ${[...byId.keys()].join(", ")}`);
   }
   const featured: unknown = JSON.parse(await readFile(join(dir, "featured.json"), "utf8"));
-  const featuredErrors = checkFeatured(featured, new Set(byId.keys()));
+  const featuredErrors = checkFeatured(featured, byId);
   if (featuredErrors.length) throw new Error(`featured.json: ${featuredErrors.join("; ")}`);
   return { repo: "mcp-catalog", version, entries: (order as string[]).map((id) => byId.get(id)!),
     featured: (featured as { collections: FeaturedCollection[] }).collections };
