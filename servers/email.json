@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "email",
       "color": "#FFFFFF",
-      "landing": "Email",
       "gatekeeper": {
         "package": "gatekeeper-email",
         "offered": false

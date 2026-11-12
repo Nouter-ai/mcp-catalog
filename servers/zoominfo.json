@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "zoominfo",
       "color": "#FFFFFF",
-      "landing": "ZoomInfo, con la app de tu empresa",
       "gatekeeper": {
         "package": "gatekeeper-zoominfo",
         "settings": [

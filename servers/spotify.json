@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "spotify",
       "color": "#FFFFFF",
-      "landing": "Spotify, con la app de tu empresa",
       "gatekeeper": {
         "package": "gatekeeper-spotify",
         "settings": [

@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "gitlab",
       "color": "#FFFFFF",
-      "landing": "GitLab, con la app de tu empresa",
       "gatekeeper": {
         "package": "gatekeeper-gitlab",
         "settings": [

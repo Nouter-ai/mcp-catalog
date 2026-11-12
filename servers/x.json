@@ -8,7 +8,6 @@
     "ai.nouter.directory": {
       "id": "x",
       "color": "#FFFFFF",
-      "landing": "X, con la API de tu empresa",
       "gatekeeper": {
         "package": "gatekeeper-x",
         "settings": [
