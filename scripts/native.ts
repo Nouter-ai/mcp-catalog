@@ -39,6 +39,10 @@ export function toNative(s: NativeServerJson): NativeEntry {
 }
 
 const VAR = /^[A-Z][A-Z0-9_]*$/;
+// Lo que el OS pone en cada gatekeeper (connectorVars en yunta-control): una entrada no lo pisa.
+const RESERVADA = /^(BASE_URL|OAUTH_|MCP_FIXED_|YUNTA_)/;
+// Los ids de lo que ya existe en cada tenant sin ser un nativo del Directory.
+const AMBIENTALES = ["context", "scheduler", "mcp", "workshop", "router"];
 const str = (v: unknown, min: number, max: number) => typeof v === "string" && v.length >= min && v.length <= max;
 
 function checkGatekeeper(id: string, g: Record<string, unknown>): string[] {
@@ -46,6 +50,9 @@ function checkGatekeeper(id: string, g: Record<string, unknown>): string[] {
   const known = new Set(["package", "relay", "secrets", "settings", "flag", "zoneVars", "offered"]);
   for (const k of Object.keys(g)) if (!known.has(k)) errors.push(`gatekeeper: clave desconocida ${k}`);
   if (g.package !== `gatekeeper-${id}`) errors.push(`gatekeeper.package: tiene que ser gatekeeper-${id}`);
+  if (AMBIENTALES.includes(id) || (id.startsWith("mcp-") && id !== "mcp-portal")) {
+    errors.push(`id: ${id} está reservado (los ambientales y el prefijo mcp- de los MCP propios; mcp-portal es la excepción)`);
+  }
   if (g.relay !== undefined && g.relay !== true) errors.push("gatekeeper.relay: solo true");
   if (g.secrets !== undefined) {
     if (g.relay !== true) errors.push("gatekeeper.secrets: las apps de Nouter solo van con relay: true");
@@ -53,10 +60,14 @@ function checkGatekeeper(id: string, g: Record<string, unknown>): string[] {
       errors.push("gatekeeper.secrets: { SECRET_DEL_GATEKEEPER: VARIABLE_DE_NOUTER } en mayúsculas");
     }
   }
+  const reservadas = [...Object.keys(isObj(g.secrets) ? g.secrets : {}), ...Object.keys(isObj(g.zoneVars) ? g.zoneVars : {}),
+    ...(Array.isArray(g.settings) ? g.settings.map((x) => (isObj(x) ? String(x.variable) : "")) : [])].filter((v) => RESERVADA.test(v));
+  if (reservadas.length) errors.push(`gatekeeper: ${[...new Set(reservadas)].join(", ")} es una variable reservada del OS (BASE_URL, OAUTH_*, MCP_FIXED_*, YUNTA_*)`);
   if (g.settings !== undefined) {
     if (!Array.isArray(g.settings)) errors.push("gatekeeper.settings: tiene que ser una lista");
     else {
       const fields = new Set<string>();
+      const variables = new Set<string>();
       for (const s of g.settings) {
         const ok = isObj(s) && typeof s.field === "string" && /^[a-zA-Z]{1,30}$/.test(s.field) && typeof s.variable === "string" && VAR.test(s.variable)
           && (s.into === undefined || s.into === "vars" || s.into === "secrets") && (s.secret === undefined || typeof s.secret === "boolean")
@@ -66,6 +77,8 @@ function checkGatekeeper(id: string, g: Record<string, unknown>): string[] {
         if (s.secret === true && s.into !== "secrets") errors.push(`gatekeeper.settings: ${s.field} es un secret y tiene que ir a into: "secrets"`);
         if (fields.has(s.field as string)) errors.push(`gatekeeper.settings: ${s.field} repetido`);
         fields.add(s.field as string);
+        if (variables.has(s.variable as string)) errors.push(`gatekeeper.settings: la variable ${s.variable} está repetida`);
+        variables.add(s.variable as string);
       }
     }
   }

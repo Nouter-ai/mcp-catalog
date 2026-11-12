@@ -80,3 +80,22 @@ test("una entrada MCP puede declarar que su servicio ya tiene gatekeeper nativo,
   s._meta["ai.nouter.directory"].nativeGatekeeper = "notion";
   falla(s, /nativeGatekeeper/);
 });
+
+test("endurecimiento: ids ambientales y el prefijo mcp- (salvo mcp-portal) no los toma una entrada nativa", () => {
+  for (const id of ["context", "scheduler", "mcp", "workshop", "router", "mcp-full"]) {
+    falla(toNativeServerJson({ ...control, id, pkg: `gatekeeper-${id}` }), /reservado/);
+  }
+  assert.deepEqual(checkServerJson(toNativeServerJson({ ...control, id: "mcp-portal", pkg: "gatekeeper-mcp-portal" })), []);
+});
+
+test("endurecimiento: una variable no pisa las del OS (BASE_URL, OAUTH_*, MCP_FIXED_*, YUNTA_*), en ajustes, zona y secrets", () => {
+  for (const variable of ["BASE_URL", "OAUTH_REDIRECT_URI", "OAUTH_RELAY_TENANT_HOSTS", "MCP_FIXED_URL", "YUNTA_SIBLINGS"]) {
+    falla(con(slack, (s) => { s._meta["ai.nouter.directory"].gatekeeper.settings[0].variable = variable; }), /reservada/);
+    falla(con(control, (s) => { s._meta["ai.nouter.directory"].gatekeeper.zoneVars = { [variable]: "https://x.{zone}" }; }), /reservada/);
+    falla(con(github, (s) => { s._meta["ai.nouter.directory"].gatekeeper.secrets = { [variable]: "GITHUB_APP_CLIENT_ID" }; }), /reservada/);
+  }
+});
+
+test("endurecimiento: dos ajustes no llenan la misma variable", () => {
+  falla(con(slack, (s) => { s._meta["ai.nouter.directory"].gatekeeper.settings[1].variable = "CLIENT_ID"; }), /variable.*repetida|repetida/);
+});

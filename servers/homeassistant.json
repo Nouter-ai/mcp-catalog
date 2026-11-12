@@ -9,7 +9,8 @@
       "id": "homeassistant",
       "color": "#FFFFFF",
       "gatekeeper": {
-        "package": "gatekeeper-homeassistant"
+        "package": "gatekeeper-homeassistant",
+        "flag": "directory-nativos"
       }
     }
   }
