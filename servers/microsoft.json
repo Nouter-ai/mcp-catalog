@@ -28,7 +28,8 @@
             "variable": "MICROSOFT_TENANT_ID",
             "into": "secrets"
           }
-        ]
+        ],
+        "offered": false
       }
     }
   }
