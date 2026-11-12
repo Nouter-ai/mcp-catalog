@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { Entry } from "./entry.ts";
-import { checkEntries, report } from "./sync.ts";
+import { SCHEMA_URL } from "./server-json.ts";
+import { checkEntries, checkSchema, report } from "./sync.ts";
 
 const entry = (over: Partial<Entry>): Entry => ({ id: "x", url: "https://a.example.com/mcp", name: "X", color: "#FFFFFF",
   tagline: "t", description: "d", settings: [], trustedLogin: [], ...over });
@@ -54,4 +55,15 @@ test("una consulta colgada o un 5xx se reintenta; si siguen fallando, falla", as
   const caido = (async () => { m++; return new Response("", { status: 503 }); }) as unknown as typeof fetch;
   await assert.rejects(checkEntries([entry({ registry: "com.a/mcp" })], caido, 0), /503/);
   assert.equal(m, 3);
+});
+
+const changelog = (...fechas: string[]) => (async () => new Response(`# Changelog\n\n## Draft (Unreleased)\n\n${fechas.map((f) => `## ${f}\n\ncambios`).join("\n\n")}\n`)) as unknown as typeof fetch;
+
+test("checkSchema: avisa si el estándar publicó una versión más nueva que la fijada, y no si no", async () => {
+  const fijada = /schemas\/([0-9-]+)\//.exec(SCHEMA_URL)![1];
+  assert.deepEqual(await checkSchema(changelog(fijada, "2025-10-17")), []);
+  const [h] = await checkSchema(changelog("2099-01-01", fijada));
+  assert.equal(h.kind, "esquema-nuevo");
+  assert.match(h.detail, /2099-01-01/);
+  await assert.rejects(checkSchema((async () => new Response("", { status: 500 })) as unknown as typeof fetch), /500/);
 });
