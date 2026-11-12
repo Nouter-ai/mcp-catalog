@@ -32,7 +32,8 @@
             "secret": true,
             "optional": true
           }
-        ]
+        ],
+        "flag": "directory-nativos"
       }
     }
   }
