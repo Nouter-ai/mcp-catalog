@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { buildDirectory, CATEGORIES, checkFeatured, directoryMetaErrors, gitAddedAt } from "./directory.ts";
+import { BASELINE_IDS, baselineErrors, buildDirectory, CATEGORIES, checkFeatured, directoryMetaErrors, gitAddedAt } from "./directory.ts";
 import { toServerJson } from "./server-json.ts";
 
 const root = new URL("..", import.meta.url).pathname;
@@ -17,7 +17,7 @@ test("schema/categories.json es la lista del contrato: 18, con id y rótulo", as
 });
 
 test("las entradas conocidas de servers/ declaran categorías, publisher, verified y signIn como la tabla (una nueva no rompe el test: la valida server-check)", async () => {
-  const files = (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json");
+  const files = (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json" && f !== "added-baseline.json");
   const tabla: Record<string, [string[], string, boolean, string]> = {
     notion: [["notes-memory", "reference-docs"], "Notion", true, "account"],
     linear: [["engineering", "tickets-tasks"], "Linear", true, "account"],
@@ -83,7 +83,7 @@ test("el índice: las 26, con tipo, categorías, added y logo; el nativo sin des
   assert.equal(notion.tagline, "Pages, databases and comments");
   assert.ok(notion.logo!.startsWith("data:image/svg+xml,"));
   assert.deepEqual(notion.connector, { kind: "mcp", signIn: "account" });
-  assert.equal(notion.added, "2026-01-01T00:00:00Z");
+  assert.equal(notion.added, "2026-10-03T20:05:35-03:00", "la del baseline, no la del historial");
   const email = idx.entries.find((e) => e.id === "email")!;
   assert.deepEqual(email.connector, { kind: "native", signIn: "none" });
   assert.equal(email.offered, false);
@@ -143,4 +143,42 @@ test("un destacado no puede nombrar una entrada con flag ni con offered: false: 
   const idx = await buildDirectory(root, "v1", () => "2026-01-01T00:00:00Z");
   const porId = new Map(idx.entries.map((e) => [e.id, e]));
   for (const c of idx.featured) for (const id of c.items) assert.ok(!porId.get(id)!.flag && porId.get(id)!.offered !== false, `${c.id}: ${id}`);
+});
+
+const HOY = ["notion", "linear", "atlassian", "cloudflare", "supabase", "stripe", "twenty", "salesforce", "netsuite", "emdash", "nouter-sor", "eset", "hexnode",
+  "github", "google", "slack", "gitlab", "microsoft", "zoominfo", "spotify", "x", "homeassistant", "mcp-portal", "email", "control", "delivery"];
+
+test("added-baseline.json: la fecha en que llegó a Nouter cada uno de los 26 de hoy; la lista es cerrada", async () => {
+  const b = JSON.parse(await readFile(new URL("../servers/added-baseline.json", import.meta.url), "utf8"));
+  assert.deepEqual(Object.keys(b).toSorted(), [...HOY].toSorted());
+  assert.deepEqual([...BASELINE_IDS].toSorted(), [...HOY].toSorted());
+  for (const [id, d] of Object.entries(b)) assert.match(d as string, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$/, id);
+  assert.equal(b.notion, "2026-10-03T20:05:35-03:00");
+  assert.equal(b.slack, "2026-10-05T13:50:25-03:00");
+  assert.equal(b["nouter-sor"], "2026-11-03T00:54:38+00:00", "llegó como nouter-platform");
+});
+
+test("added: la fecha del baseline si el id está, y si no la del historial", async () => {
+  const idx = await buildDirectory(root, "v1", () => "2030-01-01T00:00:00Z");
+  assert.equal(idx.entries.find((e) => e.id === "notion")!.added, "2026-10-03T20:05:35-03:00");
+  assert.ok(idx.entries.every((e) => e.added !== "2030-01-01T00:00:00Z"), "los 26 de hoy salen todos del baseline");
+});
+
+test("el baseline no puede crecer ni nombrar lo que no existe", async () => {
+  const ok = "2026-10-03T20:05:35-03:00";
+  assert.deepEqual(baselineErrors({ notion: ok }, new Set(["notion"])), []);
+  assert.match(baselineErrors({ nuevo: ok }, new Set(["nuevo"])).join(), /cerrada/);
+  assert.match(baselineErrors({ notion: ok }, new Set(["linear"])).join(), /no existe/);
+  assert.match(baselineErrors({ notion: "ayer" }, new Set(["notion"])).join(), /fecha/);
+  assert.match(baselineErrors([] as any, new Set()).join(), /objeto/);
+  // En el armado: un id que no está en la lista cerrada rompe el release.
+  const dir = await mkdtemp(join(tmpdir(), "dir-base-"));
+  await mkdir(join(dir, "servers")); await mkdir(join(dir, "logos"));
+  const e = { id: "uno", url: "https://a.example.com/mcp", name: "Uno", color: "#FFFFFF", tagline: "t", description: "d", settings: [], trustedLogin: [] };
+  await writeFile(join(dir, "servers/uno.json"), JSON.stringify(toServerJson(e, "1.0.0", { categories: ["engineering"], publisher: "Ej", verified: true, signIn: "account" })));
+  await writeFile(join(dir, "servers/order.json"), JSON.stringify(["uno"]));
+  await writeFile(join(dir, "servers/added-baseline.json"), JSON.stringify({ uno: ok }));
+  await writeFile(join(dir, "logos/uno.svg"), "<svg/>");
+  await writeFile(join(dir, "featured.json"), JSON.stringify({ collections: [] }));
+  await assert.rejects(buildDirectory(dir, "v1", () => "x"), /baseline.*cerrada|cerrada/);
 });

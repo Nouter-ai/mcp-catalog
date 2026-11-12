@@ -7,6 +7,8 @@ import type { Entry, Setting } from "./entry.ts";
 
 export const NS = "ai.nouter.directory";
 export const SCHEMA_URL = "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json";
+// Los archivos de servers/ que no son entradas.
+export const NOT_ENTRIES = ["order.json", "added-baseline.json"];
 const OWN = "ai.nouter/";
 const HOLE = /\{([^}]*)\}/g;
 

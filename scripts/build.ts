@@ -8,7 +8,7 @@ import type { Entry } from "./entry.ts";
 import { readLogo } from "./logo.ts";
 import { checkServerJson } from "./server-check.ts";
 import { isNative, toNative, type NativeEntry, type NativeServerJson, type TenantSetting } from "./native.ts";
-import { NS, toEntry, type ServerJson } from "./server-json.ts";
+import { NOT_ENTRIES, NS, toEntry, type ServerJson } from "./server-json.ts";
 
 // Lo que lee yunta-control (src/catalogo-mcp.ts y src/catalog.ts): los MCP remotos, los gatekeepers nativos con la forma de
 // un Connector, y los servicios que tienen nativo pero se siguen ofreciendo como MCP hasta que su app OAuth esté.
@@ -25,7 +25,7 @@ export { logoUri } from "./logo.ts";
 export interface Servers { mcp: Entry[]; natives: NativeEntry[]; pending: { id: string; pkg: string }[] }
 
 export async function readServers(dir: string): Promise<Servers> {
-  const files = (await readdir(join(dir, "servers"))).filter((f) => f.endsWith(".json") && f !== "order.json").toSorted();
+  const files = (await readdir(join(dir, "servers"))).filter((f) => f.endsWith(".json") && !NOT_ENTRIES.includes(f)).toSorted();
   const out: Servers = { mcp: [], natives: [], pending: [] };
   const names = new Map<string, string>();
   for (const f of files) {

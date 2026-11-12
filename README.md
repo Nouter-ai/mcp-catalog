@@ -26,7 +26,7 @@ publicada que fija `schema/vendor/` (`2025-12-11`), con lo de nouter bajo `_meta
 Las dos clases llevan además los datos de la vidriera de Discover, bajo `_meta["ai.nouter.directory"]`: `categories`
 (1 a 3 temas de `schema/categories.json`, el primero es el principal), `publisher` («Google»), `verified` y `signIn`
 (`account`: cada persona entra con su cuenta; `company`: la empresa carga una clave o app y nadie entra; `none`).
-`featured.json` lista las colecciones curadas del carrusel *Curated by Nouter* (ids de entradas que existan).
+`servers/added-baseline.json` es una carga única: la fecha en que llegó a Nouter cada uno de los 26 conectores de hoy (el primer commit que lo sumó al catálogo de nouter). Es una lista cerrada, no crece: el `added` de un conector nuevo sale del historial de git. `featured.json` lista las colecciones curadas del carrusel *Curated by Nouter* (ids de entradas que existan, sin flag y ofrecidas).
 
 Cada release publica el registro estático en `registry.tar.gz` (`v0.1/servers.json`, `…/versions.json`, `latest` y cada
 versión), con la forma de la API de un registro. Los gatekeepers nativos no están ahí: el estándar no tiene tipo para ellos.

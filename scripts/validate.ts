@@ -10,13 +10,13 @@ import { buildDirectory } from "./directory.ts";
 import { urlHoles, type Entry } from "./entry.ts";
 import { probe } from "./probe.ts";
 import { versionErrors } from "./server-check.ts";
-import type { ServerJson } from "./server-json.ts";
+import { NOT_ENTRIES, type ServerJson } from "./server-json.ts";
 
 // Una url con hueco no tiene un host de ejemplo que resuelva: se prueba en un tenant (docs/yunta/netsuite.md).
 export const probeable = (e: Pick<Entry, "url">): boolean => urlHoles(e.url).length === 0;
 
 export function changedIds(files: string[]): string[] {
-  return files.flatMap((f) => { const m = /^servers\/([a-z0-9-]+)\.json$/.exec(f); return m && m[1] !== "order" ? [m[1]] : []; });
+  return files.flatMap((f) => { const m = /^servers\/([a-z0-9-]+)\.json$/.exec(f); return m && !NOT_ENTRIES.includes(`${m[1]}.json`) ? [m[1]] : []; });
 }
 
 // Cambiar la URL o la autenticación obliga a reconectar: la versión tiene que subir. Una base en el formato viejo (el PR

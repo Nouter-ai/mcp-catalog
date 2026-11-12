@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { readLogo } from "./logo.ts";
 import { isNative, type NativeServerJson } from "./native.ts";
 import { checkServerJson } from "./server-check.ts";
-import { NS, type ServerJson } from "./server-json.ts";
+import { NOT_ENTRIES, NS, type ServerJson } from "./server-json.ts";
 import type { DirectoryCategory, SignIn } from "./directory-meta.ts";
 export { CATEGORIES, CATEGORY_LABELS, SIGN_INS, directoryMetaErrors } from "./directory-meta.ts";
 export type { DirectoryCategory, DirectoryMeta, SignIn } from "./directory-meta.ts";
@@ -68,8 +68,31 @@ export function gitAddedAt(root: string): (path: string) => string {
   };
 }
 
+// La fecha de llegada de los conectores que ya estaban cuando se armó el índice: sin esto, los 16 que se migraron en bloque al formato
+// del registro saldrían con la del commit de la migración y encabezarían *New*. Una carga única: la lista es cerrada y no crece (un
+// conector nuevo toma su `added` del historial de git).
+export const BASELINE_IDS = ["notion", "linear", "atlassian", "cloudflare", "supabase", "stripe", "twenty", "salesforce", "netsuite", "emdash",
+  "nouter-sor", "eset", "hexnode", "github", "google", "slack", "gitlab", "microsoft", "zoominfo", "spotify", "x", "homeassistant", "mcp-portal",
+  "email", "control", "delivery"] as const;
+const ISO = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:\d\d)$/;
+
+export function baselineErrors(raw: unknown, ids: ReadonlySet<string>): string[] {
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return ["added-baseline.json: tiene que ser un objeto { id: fecha }"];
+  const errors: string[] = [];
+  for (const [id, d] of Object.entries(raw)) {
+    if (!(BASELINE_IDS as readonly string[]).includes(id)) errors.push(`added-baseline.json: ${id} no está en la lista cerrada (los 26 de hoy): el baseline no crece, un conector nuevo toma su fecha de git`);
+    else if (!ids.has(id)) errors.push(`added-baseline.json: ${id} no existe en servers/`);
+    if (typeof d !== "string" || !ISO.test(d) || Number.isNaN(Date.parse(d))) errors.push(`added-baseline.json: ${id}: la fecha tiene que ser ISO 8601 con zona`);
+  }
+  return errors;
+}
+
 export async function buildDirectory(dir: string, version: string, addedOf: (path: string) => string): Promise<DirectoryReleaseIndex> {
-  const files = (await readdir(join(dir, "servers"))).filter((f) => f.endsWith(".json") && f !== "order.json").toSorted();
+  const files = (await readdir(join(dir, "servers"))).filter((f) => f.endsWith(".json") && !NOT_ENTRIES.includes(f)).toSorted();
+  const baseline: Record<string, string> = await readFile(join(dir, "servers", "added-baseline.json"), "utf8").then((t) => JSON.parse(t), () => ({}));
+  const fileIds = new Set<string>(files.map((f) => f.replace(/\.json$/, "")));
+  const baselineProblems = baselineErrors(baseline, fileIds);
+  if (baselineProblems.length) throw new Error(baselineProblems.join("; "));
   const byId = new Map<string, DirectoryReleaseEntry>();
   for (const f of files) {
     const raw = JSON.parse(await readFile(join(dir, "servers", f), "utf8")) as ServerJson | NativeServerJson;
@@ -82,7 +105,7 @@ export async function buildDirectory(dir: string, version: string, addedOf: (pat
       id: m.id, type: "connector", name: raw.title, tagline: raw.description,
       // Un nativo no tiene descripción larga: su descripción es el tagline.
       description: native ? raw.description : (m as ServerJson["_meta"][string]).description,
-      publisher: m.publisher!, verified: m.verified!, categories: m.categories!, added: addedOf(`servers/${f}`),
+      publisher: m.publisher!, verified: m.verified!, categories: m.categories!, added: baseline[m.id] ?? addedOf(`servers/${f}`),
       logo: await readLogo(dir, m.id), ...(g?.flag ? { flag: g.flag } : {}), ...(g?.offered === false ? { offered: false } : {}),
       connector: { kind: native ? "native" : "mcp", signIn: m.signIn! },
     });
