@@ -153,7 +153,7 @@ test("added-baseline.json: la fecha en que llegó a Nouter cada uno de los 26 de
   assert.deepEqual(Object.keys(b).toSorted(), [...HOY].toSorted());
   assert.deepEqual([...BASELINE_IDS].toSorted(), [...HOY].toSorted());
   for (const [id, d] of Object.entries(b)) assert.match(d as string, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$/, id);
-  assert.equal(b.notion, "2026-10-03T23:05:35.000Z");
+  assert.equal(b.notion, "2026-10-03T20:05:35-03:00");
   assert.equal(b.slack, "2026-10-05T13:50:25-03:00");
   assert.equal(b["nouter-sor"], "2026-11-03T00:54:38+00:00", "llegó como nouter-platform");
 });
