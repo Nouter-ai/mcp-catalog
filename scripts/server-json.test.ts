@@ -6,7 +6,7 @@ import { NS, toEntry, toServerJson } from "./server-json.ts";
 
 const real: Entry[] = [];
 for (const f of (await readdir(new URL("../servers", import.meta.url))).filter((f) => f.endsWith(".json") && f !== "order.json")) {
-  real.push(JSON.parse(await readFile(new URL(`../servers/${f}`, import.meta.url), "utf8")));
+  real.push(toEntry(JSON.parse(await readFile(new URL(`../servers/${f}`, import.meta.url), "utf8"))));
 }
 const withHole: Entry = {
   id: "acme", url: "https://{accountId}.acme.example.com/mcp", name: "Acme", color: "#112233", tagline: "Acme things",

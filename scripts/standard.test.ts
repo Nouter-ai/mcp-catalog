@@ -12,3 +12,20 @@ test("el esquema del estándar está fijado, con el commit del que salió", asyn
   assert.equal(sd.properties.name.pattern, "^[a-zA-Z0-9.-]+/[a-zA-Z0-9._-]+$");
   assert.match(await load("README.md"), /\b[0-9a-f]{40}\b/);
 });
+
+test("cada servers/<id>.json es un server.json del estándar, con lo de Nouter solo bajo su namespace", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const dir = new URL("../servers/", import.meta.url);
+  const files = (await readdir(dir)).filter((f) => f.endsWith(".json") && f !== "order.json");
+  assert.equal(files.length, 7);
+  for (const f of files) {
+    const s = JSON.parse(await readFile(new URL(f, dir), "utf8"));
+    assert.match(s.$schema, /server\.schema\.json$/, f);
+    assert.match(s.name, /^[a-zA-Z0-9.-]+\/[a-zA-Z0-9._-]+$/, f);
+    assert.ok(s.description.length >= 1 && s.description.length <= 100, f);
+    assert.ok(s.title && s.version, f);
+    assert.equal(s.remotes[0].type, "streamable-http", f);
+    assert.deepEqual(Object.keys(s._meta), ["ai.nouter.directory"], f);
+    assert.equal(`${s._meta["ai.nouter.directory"].id}.json`, f);
+  }
+});

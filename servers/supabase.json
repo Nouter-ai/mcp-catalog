@@ -1,12 +1,25 @@
 {
-  "id": "supabase",
-  "registry": "com.supabase/mcp",
-  "url": "https://mcp.supabase.com/mcp",
-  "name": "Supabase",
-  "landing": { "es": "Supabase" },
-  "color": "#FFFFFF",
-  "tagline": "Projects, databases and functions",
-  "description": "Supabase's official MCP server. Writes, including SQL, wait for your approval. Avoid connecting production projects.",
-  "settings": [],
-  "trustedLogin": []
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/15739da3285de712addeebbed093bf3e79893d35/docs/reference/server-json/draft/server.schema.json",
+  "name": "com.supabase/mcp",
+  "title": "Supabase",
+  "description": "Projects, databases and functions",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.supabase.com/mcp"
+    }
+  ],
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "supabase",
+      "description": "Supabase's official MCP server. Writes, including SQL, wait for your approval. Avoid connecting production projects.",
+      "color": "#FFFFFF",
+      "landing": {
+        "es": "Supabase"
+      },
+      "settings": [],
+      "trustedLogin": []
+    }
+  }
 }

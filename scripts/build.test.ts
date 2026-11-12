@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { buildCatalog, logoUri, readEntries } from "./build.ts";
+import { toServerJson } from "./server-json.ts";
 
 const root = new URL("..", import.meta.url).pathname;
 
@@ -30,7 +31,7 @@ test("el build falla si una entrada no vale, si falta un logo o si el orden no n
   const dir = await mkdtemp(join(tmpdir(), "catalogo-"));
   await mkdir(join(dir, "servers")); await mkdir(join(dir, "logos"));
   const e = { id: "uno", url: "https://a.example.com/mcp", name: "Uno", color: "#FFFFFF", tagline: "t", description: "d", settings: [], trustedLogin: [] };
-  await writeFile(join(dir, "servers/uno.json"), JSON.stringify(e));
+  await writeFile(join(dir, "servers/uno.json"), JSON.stringify(toServerJson(e)));
   await writeFile(join(dir, "servers/order.json"), JSON.stringify(["uno"]));
   await assert.rejects(buildCatalog(dir, "v1"), /logo/);
   await writeFile(join(dir, "logos/uno.svg"), "<svg/>");
@@ -40,7 +41,7 @@ test("el build falla si una entrada no vale, si falta un logo o si el orden no n
   await writeFile(join(dir, "servers/order.json"), JSON.stringify(["uno", "uno"]));
   await assert.rejects(buildCatalog(dir, "v1"), /order/);
   await writeFile(join(dir, "servers/order.json"), JSON.stringify(["uno"]));
-  await writeFile(join(dir, "servers/dos.json"), JSON.stringify({ ...e, id: "otro" }));
+  await writeFile(join(dir, "servers/dos.json"), JSON.stringify(toServerJson({ ...e, id: "otro" })));
   await assert.rejects(buildCatalog(dir, "v1"), /dos\.json/);
 });
 

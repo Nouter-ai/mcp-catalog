@@ -5,6 +5,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkEntry, type Entry } from "./entry.ts";
+import { toEntry, type ServerJson } from "./server-json.ts";
 
 export interface Catalog { version: string; servers: (Entry & { logo: string })[] }
 
@@ -15,10 +16,9 @@ export async function readEntries(dir: string): Promise<Entry[]> {
   const files = (await readdir(join(dir, "servers"))).filter((f) => f.endsWith(".json") && f !== "order.json").toSorted();
   const entries: Entry[] = [];
   for (const f of files) {
-    const raw: unknown = JSON.parse(await readFile(join(dir, "servers", f), "utf8"));
-    const errors = checkEntry(raw);
+    const e = toEntry(JSON.parse(await readFile(join(dir, "servers", f), "utf8")) as ServerJson);
+    const errors = checkEntry(e);
     if (errors.length) throw new Error(`${f}: ${errors.join("; ")}`);
-    const e = raw as Entry;
     if (`${e.id}.json` !== f) throw new Error(`${f}: el id (${e.id}) tiene que ser el nombre del archivo`);
     entries.push(e);
   }

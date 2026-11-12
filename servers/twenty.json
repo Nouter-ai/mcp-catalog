@@ -1,11 +1,25 @@
 {
-  "id": "twenty",
-  "url": "https://api.twenty.com/mcp",
-  "name": "Twenty",
-  "landing": { "es": "Twenty" },
-  "color": "#FFFFFF",
-  "tagline": "People, companies and opportunities",
-  "description": "Twenty's official MCP server, for Twenty Cloud workspaces. Writes wait for your approval. A self-hosted Twenty can be added as your company's own MCP server.",
-  "settings": [],
-  "trustedLogin": []
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/15739da3285de712addeebbed093bf3e79893d35/docs/reference/server-json/draft/server.schema.json",
+  "name": "ai.nouter/twenty",
+  "title": "Twenty",
+  "description": "People, companies and opportunities",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.twenty.com/mcp"
+    }
+  ],
+  "_meta": {
+    "ai.nouter.directory": {
+      "id": "twenty",
+      "description": "Twenty's official MCP server, for Twenty Cloud workspaces. Writes wait for your approval. A self-hosted Twenty can be added as your company's own MCP server.",
+      "color": "#FFFFFF",
+      "landing": {
+        "es": "Twenty"
+      },
+      "settings": [],
+      "trustedLogin": []
+    }
+  }
 }
