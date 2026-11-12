@@ -23,6 +23,11 @@ publicada que fija `schema/vendor/` (`2025-12-11`), con lo de nouter bajo `_meta
   los ajustes que carga el admin (lo que el gatekeeper declara en su `deploy-inputs.json`), la app de nouter por el relay, el
   flag y las variables de zona. `offered: false` lo deja en el catálogo sin ofrecerlo.
 
+Las dos clases llevan además los datos de la vidriera de Discover, bajo `_meta["ai.nouter.directory"]`: `categories`
+(1 a 3 temas de `schema/categories.json`, el primero es el principal), `publisher` («Google»), `verified` y `signIn`
+(`account`: cada persona entra con su cuenta; `company`: la empresa carga una clave o app y nadie entra; `none`).
+`featured.json` lista las colecciones curadas del carrusel *Curated by Nouter* (ids de entradas que existan).
+
 Cada release publica el registro estático en `registry.tar.gz` (`v0.1/servers.json`, `…/versions.json`, `latest` y cada
 versión), con la forma de la API de un registro. Los gatekeepers nativos no están ahí: el estándar no tiene tipo para ellos.
 
@@ -41,7 +46,7 @@ pruebas. Antes de mergear, revisar que no toque `scripts/` ni `.github/`, o corr
 
 ## Versiones
 
-Cada tag `vN` publica un release con `catalog.json` (la foto completa del catálogo: MCP, nativos y los servicios con nativo pendiente) y `registry.tar.gz`. El job semanal avisa si un servidor del registro oficial cambió su URL o se retiró, y si el estándar publicó un esquema nuevo. nouter fija una versión y
+Cada tag `vN` publica un release con `catalog.json` (la foto completa del catálogo: MCP, nativos y los servicios con nativo pendiente) `directory.json` (el índice de lo que se muestra: las entradas con sus datos, su logo y `added`, la fecha del commit que la agregó, más los destacados) y `registry.tar.gz`. El job semanal avisa si un servidor del registro oficial cambió su URL o se retiró, y si el estándar publicó un esquema nuevo. nouter fija una versión y
 la sube con un PR propio.
 
 ## Desarrollo

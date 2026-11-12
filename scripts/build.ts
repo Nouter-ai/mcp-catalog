@@ -5,6 +5,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Entry } from "./entry.ts";
+import { readLogo } from "./logo.ts";
 import { checkServerJson } from "./server-check.ts";
 import { isNative, toNative, type NativeEntry, type NativeServerJson, type TenantSetting } from "./native.ts";
 import { NS, toEntry, type ServerJson } from "./server-json.ts";
@@ -19,8 +20,7 @@ export interface Catalog {
   version: string; servers: (Entry & { logo: string })[]; natives: CatalogNative[]; nativePending: { id: string; pkg: string }[];
 }
 
-// El mismo código que generó logos.ts en yunta-control: así los conectores de hoy no cambian.
-export const logoUri = (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg.trim())}`;
+export { logoUri } from "./logo.ts";
 
 export interface Servers { mcp: Entry[]; natives: NativeEntry[]; pending: { id: string; pkg: string }[] }
 
@@ -58,14 +58,7 @@ export async function buildCatalog(dir: string, version: string): Promise<Catalo
     || !ids.every((id) => order.includes(id))) {
     throw new Error(`servers/order.json tiene que nombrar una vez a cada entrada: ${ids.join(", ")}`);
   }
-  const logo = async (id: string) => {
-    let svg: string;
-    try { svg = await readFile(join(dir, "logos", `${id}.svg`), "utf8"); } catch { throw new Error(`falta el logo logos/${id}.svg`); }
-    if (!/^<svg[\s>/]/.test(svg.trim())) throw new Error(`logos/${id}.svg no es un SVG`);
-    const uri = logoUri(svg);
-    if (uri.length >= 5000) throw new Error(`logos/${id}.svg es muy grande (${uri.length} como data URI)`);
-    return uri;
-  };
+  const logo = (id: string) => readLogo(dir, id);
   const mcpById = new Map(mcp.map((e) => [e.id, e])), nativeById = new Map(natives.map((e) => [e.id, e]));
   const servers: Catalog["servers"] = [], out: CatalogNative[] = [];
   for (const id of order as string[]) {
@@ -96,4 +89,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     await writeFile(join(root, "dist", "registry", path), body);
   }
   console.log(`dist/registry: ${files.size} archivos`);
+  // El índice de lo que se muestra (scripts/directory.ts). `added` sale del historial de git: el release corre con fetch-depth: 0.
+  const { buildDirectory, gitAddedAt } = await import("./directory.ts");
+  const directory = await buildDirectory(root, catalog.version, gitAddedAt(root));
+  await writeFile(join(root, "dist", "directory.json"), `${JSON.stringify(directory, null, 2)}\n`);
+  console.log(`dist/directory.json: ${directory.entries.length} entradas, ${directory.featured.length} colecciones`);
 }

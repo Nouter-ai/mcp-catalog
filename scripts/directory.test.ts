@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
-import { readdir, readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
-import { CATEGORIES, directoryMetaErrors } from "./directory.ts";
+import { buildDirectory, CATEGORIES, checkFeatured, directoryMetaErrors, gitAddedAt } from "./directory.ts";
+import { toServerJson } from "./server-json.ts";
+
+const root = new URL("..", import.meta.url).pathname;
 
 test("schema/categories.json es la lista del contrato: 18, con id y rótulo", async () => {
   const s = JSON.parse(await readFile(new URL("../schema/categories.json", import.meta.url), "utf8"));
@@ -62,4 +68,55 @@ test("directoryMetaErrors: lo válido pasa y cada campo mal puesto falla con su 
   falla({ signIn: "otro" }, /signIn/);
   falla({ extra: 1 }, /desconocida/);
   assert.match(directoryMetaErrors({ publisher: "N", verified: true, signIn: "none" }, permitidas).join(), /categories/);
+});
+
+test("el índice: las 26, con tipo, categorías, added y logo; el nativo sin descripción larga", async () => {
+  const idx = await buildDirectory(root, "v14", () => "2026-01-01T00:00:00Z");
+  assert.equal(idx.repo, "mcp-catalog");
+  assert.equal(idx.version, "v14");
+  assert.deepEqual(idx.entries.map((e) => e.id), JSON.parse(await readFile(new URL("../servers/order.json", import.meta.url), "utf8")));
+  const notion = idx.entries.find((e) => e.id === "notion")!;
+  assert.equal(notion.type, "connector");
+  assert.equal(notion.tagline, "Pages, databases and comments");
+  assert.ok(notion.logo!.startsWith("data:image/svg+xml,"));
+  assert.deepEqual(notion.connector, { kind: "mcp", signIn: "account" });
+  assert.equal(notion.added, "2026-01-01T00:00:00Z");
+  const email = idx.entries.find((e) => e.id === "email")!;
+  assert.deepEqual(email.connector, { kind: "native", signIn: "none" });
+  assert.equal(email.offered, false);
+  assert.equal(email.description, "A mailbox for each gadget");
+  assert.equal(idx.featured[0].id, "sales-essentials");
+});
+
+test("un destacado que nombra un id que no existe, repite una colección o deja un título vacío falla", () => {
+  assert.match(checkFeatured({ collections: [{ id: "a", title: "A", subtitle: "s", items: ["nada"] }] }, new Set(["notion"])).join(), /items/);
+  assert.match(checkFeatured({ collections: [{ id: "a", title: "", subtitle: "s", items: ["notion"] }] }, new Set(["notion"])).join(), /title/);
+  const dos = [{ id: "a", title: "A", subtitle: "s", items: ["notion"] }];
+  assert.match(checkFeatured({ collections: [...dos, ...dos] }, new Set(["notion"])).join(), /repetid/);
+});
+
+test("added sale del primer commit que agregó la entrada", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "dir-added-"));
+  await mkdir(join(dir, "servers")); await mkdir(join(dir, "logos"));
+  const e = { id: "uno", url: "https://a.example.com/mcp", name: "Uno", color: "#FFFFFF", tagline: "t", description: "d", settings: [], trustedLogin: [] };
+  const meta = { categories: ["engineering" as const], publisher: "Ej", verified: true, signIn: "account" as const };
+  await writeFile(join(dir, "servers/uno.json"), JSON.stringify(toServerJson(e, "1.0.0", meta)));
+  await writeFile(join(dir, "servers/order.json"), JSON.stringify(["uno"]));
+  await writeFile(join(dir, "logos/uno.svg"), "<svg/>");
+  await writeFile(join(dir, "featured.json"), JSON.stringify({ collections: [] }));
+  const env = { ...process.env, GIT_AUTHOR_DATE: "2026-01-01T00:00:00Z", GIT_COMMITTER_DATE: "2026-01-01T00:00:00Z" };
+  const git = (...a: string[]) => execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a], { cwd: dir, stdio: "ignore", env });
+  git("init", "-q", "-b", "main"); git("add", "."); git("commit", "-qm", "base");
+  // Un cambio posterior no mueve la fecha: cuenta el commit que la agregó.
+  await writeFile(join(dir, "servers/uno.json"), JSON.stringify({ ...toServerJson(e, "1.0.1", meta) }));
+  execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", "commit", "-qam", "cambio"], { cwd: dir, stdio: "ignore",
+    env: { ...env, GIT_AUTHOR_DATE: "2026-03-01T00:00:00Z", GIT_COMMITTER_DATE: "2026-03-01T00:00:00Z" } });
+  const idx = await buildDirectory(dir, "v1", gitAddedAt(dir));
+  assert.equal(idx.entries[0].added, "2026-01-01T00:00:00+00:00");
+});
+
+test("el release publica directory.json y corre con el historial completo", async () => {
+  const y = await readFile(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
+  assert.match(y, /fetch-depth: 0/);
+  assert.match(y, /dist\/directory\.json/);
 });
