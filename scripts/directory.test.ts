@@ -26,6 +26,7 @@ test("las entradas conocidas de servers/ declaran categorías, publisher, verifi
     supabase: [["databases", "engineering"], "Supabase", true, "account"],
     stripe: [["finance", "retail-ecommerce"], "Stripe", true, "account"],
     twenty: [["sales", "contacts-leads"], "Twenty", true, "account"],
+    brex: [["finance"], "Brex", true, "account"],
     salesforce: [["sales", "contacts-leads"], "Salesforce", true, "account"],
     netsuite: [["finance", "databases"], "Oracle NetSuite", true, "account"],
     emdash: [["websites", "design-media"], "Cloudflare", true, "account"],

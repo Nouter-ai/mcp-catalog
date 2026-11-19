@@ -19,10 +19,10 @@ test("el catalog.json de las entradas migradas es idéntico al v8 que usa yunta-
 test("la lista tiene la forma de /v0.1/servers, una fila por servidor y en el orden del catálogo", async () => {
   const files = await buildRegistry(root, "v1", AT);
   const list = JSON.parse(files.get("v0.1/servers.json")!);
-  assert.equal(list.metadata.count, 7);
+  assert.equal(list.metadata.count, 8);
   assert.equal(list.metadata.nextCursor, null);
   assert.deepEqual(list.servers.map((r: any) => r.server.title),
-    ["Notion", "Linear", "Atlassian", "Cloudflare", "Supabase", "Stripe", "Twenty"]);
+    ["Notion", "Linear", "Atlassian", "Cloudflare", "Supabase", "Stripe", "Brex", "Twenty"]);
   for (const r of list.servers) {
     assert.deepEqual(checkServerJson(r.server), [], r.server.name);
     assert.deepEqual(r._meta[OFFICIAL], { status: "active", publishedAt: AT, isLatest: true });
@@ -38,7 +38,7 @@ test("cada servidor tiene sus versiones, latest y su versión exacta, con el nam
   assert.deepEqual(latest, JSON.parse(files.get(`${dir}/versions/1.0.0.json`)!));
   assert.equal(latest.server.name, "com.notion/mcp");
   assert.deepEqual(Object.keys(latest).toSorted(), ["_meta", "server"]);
-  assert.equal([...files.keys()].filter((k) => k.endsWith("/versions/latest.json")).length, 7);
+  assert.equal([...files.keys()].filter((k) => k.endsWith("/versions/latest.json")).length, 8);
 });
 
 test("el armado es reproducible: mismos archivos y mismos bytes", async () => {
