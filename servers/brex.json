@@ -15,9 +15,6 @@
       "id": "brex",
       "description": "Brex's official MCP server (beta), for cards, expenses and accounting in your Brex account. Reads happen straight away; anything that writes waits for your approval.",
       "color": "#FFFFFF",
-      "landing": {
-        "es": "Brex"
-      },
       "settings": [],
       "trustedLogin": [],
       "categories": [

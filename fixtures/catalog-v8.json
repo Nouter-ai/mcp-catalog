@@ -94,9 +94,6 @@
       "id": "brex",
       "url": "https://api.brex.com/mcp",
       "name": "Brex",
-      "landing": {
-        "es": "Brex"
-      },
       "color": "#FFFFFF",
       "tagline": "Cards, expenses and accounting (beta)",
       "description": "Brex's official MCP server (beta), for cards, expenses and accounting in your Brex account. Reads happen straight away; anything that writes waits for your approval.",
