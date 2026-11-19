@@ -19,7 +19,7 @@ test("cada servers/<id>.json es un server.json del estándar, con lo de Nouter s
   const { readdir } = await import("node:fs/promises");
   const dir = new URL("../servers/", import.meta.url);
   const files = (await readdir(dir)).filter((f) => f.endsWith(".json") && f !== "order.json" && f !== "added-baseline.json");
-  assert.equal(files.length, 26);
+  assert.equal(files.length, 27);
   for (const f of files) {
     const s = JSON.parse(await readFile(new URL(f, dir), "utf8"));
     const nativa = !!s._meta?.["ai.nouter.directory"]?.gatekeeper;

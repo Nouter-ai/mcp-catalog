@@ -26,6 +26,7 @@ test("las entradas conocidas de servers/ declaran categorías, publisher, verifi
     supabase: [["databases", "engineering"], "Supabase", true, "account"],
     stripe: [["finance", "retail-ecommerce"], "Stripe", true, "account"],
     twenty: [["sales", "contacts-leads"], "Twenty", true, "account"],
+    brex: [["finance"], "Brex", true, "account"],
     salesforce: [["sales", "contacts-leads"], "Salesforce", true, "account"],
     netsuite: [["finance", "databases"], "Oracle NetSuite", true, "account"],
     emdash: [["websites", "design-media"], "Cloudflare", true, "account"],
@@ -161,7 +162,10 @@ test("added-baseline.json: la fecha en que llegó a Nouter cada uno de los 26 de
 test("added: la fecha del baseline si el id está, y si no la del historial", async () => {
   const idx = await buildDirectory(root, "v1", () => "2030-01-01T00:00:00Z");
   assert.equal(idx.entries.find((e) => e.id === "notion")!.added, "2026-10-03T23:05:35.000Z");
-  assert.ok(idx.entries.every((e) => e.added !== "2030-01-01T00:00:00Z"), "los 26 de hoy salen todos del baseline");
+  const baseline = new Set<string>(BASELINE_IDS);
+  assert.ok(idx.entries.filter((e) => baseline.has(e.id)).every((e) => e.added !== "2030-01-01T00:00:00Z"), "los 26 de hoy salen todos del baseline");
+  // Un conector nuevo (Brex) no está en el baseline: su fecha sale del historial.
+  assert.equal(idx.entries.find((e) => e.id === "brex")!.added, "2030-01-01T00:00:00Z");
 });
 
 test("el baseline no puede crecer ni nombrar lo que no existe", async () => {
