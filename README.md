@@ -46,10 +46,13 @@ pruebas. Antes de mergear, revisar que no toque `scripts/` ni `.github/`, o corr
 
 ## Versiones
 
-Cada tag `vN` publica un release con `catalog.json` (la foto completa del catálogo: MCP, nativos y los servicios con nativo pendiente) `directory.json` (el índice de lo que se muestra: las entradas con sus datos, su logo y `added`, la fecha del commit que la agregó, más los destacados) y `registry.tar.gz`. El job semanal avisa si un servidor del registro oficial cambió su URL o se retiró, y si el estándar publicó un esquema nuevo. nouter fija una versión y
-la sube con un PR propio.
+Cada tag `vN` publica un release con `catalog.json` (la foto completa del catálogo: MCP, nativos y los servicios con nativo pendiente) `directory.json` (el índice de lo que se muestra: las entradas con sus datos, su logo y `added`, la fecha del commit que la agregó, más los destacados) y `registry.tar.gz`. El sync lo corre, todos los lunes, el reloj de CI de
+[nouter](https://github.com/Nouter-ai/nouter/blob/main/.github/workflows/mcp-catalog-sync.yml): avisa si un servidor del registro oficial
+cambió su URL o se retiró, y si el estándar publicó un esquema nuevo, con un PR (`sync/registro`) que una persona revisa y mergea. nouter fija una versión
+y la sube con un PR propio.
 
 ## Desarrollo
 
 Node 24, sin dependencias: `npm test`, `node scripts/validate.ts`, `node scripts/build.ts dev` y
-`node scripts/sync.ts`.
+`node scripts/sync.ts` (a mano: compara las entradas con el registro oficial y, si hay novedades, deja
+`informes/registro.md`; el PR lo abre el reloj de nouter).
